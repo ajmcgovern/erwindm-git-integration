@@ -181,6 +181,13 @@ CREATE TABLE [Cust]
 )
 go
 
+CREATE TABLE [demo]
+( 
+	[demo_id]            char(18)  NOT NULL ,
+	[product]            char(18)  NULL 
+)
+go
+
 CREATE TABLE [Disc]
 ( 
 	[Disc Typ]           varchar(4)  NOT NULL ,
@@ -435,6 +442,10 @@ CREATE INDEX [XIE1Customer] ON [Cust]
 	[Cust Lst Nam]        ASC,
 	[Cust Frst Nam]       ASC
 )
+go
+
+ALTER TABLE [demo]
+	ADD CONSTRAINT [XPKdemo] PRIMARY KEY  CLUSTERED ([demo_id] ASC)
 go
 
 ALTER TABLE [Disc]
@@ -4103,15 +4114,3 @@ go
 
 
 
-
-
-CREATE TABLE [demo]
-( 
-	[demo_id]            char(18)  NOT NULL ,
-	[product]            char(18)  NULL 
-)
-go
-
-ALTER TABLE [demo]
-ADD CONSTRAINT [XPKdemo] PRIMARY KEY  CLUSTERED ([demo_id] ASC)
-go
