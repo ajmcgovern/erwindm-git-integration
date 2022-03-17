@@ -4103,3 +4103,15 @@ go
 
 
 
+
+
+CREATE TABLE [demo]
+( 
+	[demo_id]            char(18)  NOT NULL ,
+	[product]            char(18)  NULL 
+)
+go
+
+ALTER TABLE [demo]
+ADD CONSTRAINT [XPKdemo] PRIMARY KEY  CLUSTERED ([demo_id] ASC)
+go
