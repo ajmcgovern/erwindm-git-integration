@@ -59,7 +59,8 @@ CREATE TABLE DimCustomer
 	AddressLine2         nvarchar(120) COLLATE SQL_Latin1_General_CP1_CI_AS  NULL ,
 	Phone                nvarchar(20) COLLATE SQL_Latin1_General_CP1_CI_AS  NULL ,
 	DateFirstPurchase    date  NULL ,
-	CommuteDistance      nvarchar(15) COLLATE SQL_Latin1_General_CP1_CI_AS  NULL 
+	CommuteDistance      nvarchar(15) COLLATE SQL_Latin1_General_CP1_CI_AS  NULL ,
+	DEMO                 char(18)  NULL 
 )
 go
 
