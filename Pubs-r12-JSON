@@ -1,0 +1,393 @@
+/* [JSON Object:Rylty] */
+{
+     "Rylty_Id": "",
+     "Lo_Rnge": 0,
+     "Hi_Rnge": 0,
+     "Rylty_Amt": 0,
+     "Rylty_Pmt": [
+          {
+               "Pmt_Dt": "",
+               "Pmt_Amt": 0.0,
+               "Rylty_Id": "",
+               "Auth_Id": "",
+               "Book_Id": ""
+          }
+     ]
+};
+/* [JSON Object:Disc] */
+{
+     "Disc_Typ": "",
+     "Lo_Qty": 0,
+     "Hi_Qty": 0,
+     "Disc_Pct": 0.0,
+     "Ordr_Itm": [
+          {
+               "Itm_Seq_Nbr": 0,
+               "Ordr_Qty": 0,
+               "Ordr_Disc_Amt": 0.0,
+               "Ordr_Prc": 0.0,
+               "Disc_Typ": "",
+               "Ordr_Nbr": 0,
+               "Book_Id": "",
+               "Ordr_Ship": [
+                    {
+                         "Blng_Addr": "",
+                         "Ship_Addr": "",
+                         "Ship_Stat": "",
+                         "Shed_Ship_Dt": "",
+                         "Itm_Seq_Nbr": 0,
+                         "Ordr_Nbr": 0,
+                         "Ordr_Ship_Id": "",
+                         "Bk_Ordr": {
+                              "Reschd_Ship_Dt": "",
+                              "Itm_Seq_Nbr": 0,
+                              "Ordr_Nbr": 0,
+                              "Ordr_Ship_Id": ""
+                         }
+                    }
+               ],
+               "Book_Retrun": [
+                    {
+                         "Book_Rtrn_Dt": "",
+                         "Itm_Seq_Nbr": 0,
+                         "Ordr_Nbr": 0,
+                         "Book_Rtrn_Id": ""
+                    }
+               ],
+               "Rylty_Hist": [
+                    {
+                         "Rylty_Hist_Id": "",
+                         "Rylty_Pmt_Dt": "",
+                         "Rylty_Pmt_Amt": 0.0,
+                         "Rylty_Payee": "",
+                         "Itm_Seq_Nbr": 0,
+                         "Ordr_Nbr": 0
+                    }
+               ]
+          }
+     ]
+};
+/* [JSON Object:Job] */
+{
+     "Job_Id": "",
+     "Job_Desc": "",
+     "Min_LvL": "",
+     "Max_LvL": "",
+     "Emp": [
+          {
+               "Emp_Frst_Nam": "",
+               "Emp_Mid_Init": "",
+               "Emp_Lst_Nam": "",
+               "Curr_Emp_Job_Ttle": "",
+               "Emp_Hire_Dt": "",
+               "Job_Id": "",
+               "Emp_Id": "",
+               "Reporting_Structure": [
+                    {
+                         "Strt_Dt": "",
+                         "End_Dt": "",
+                         "Mngr": "",
+                         "Rpt_To": ""
+                    }
+               ]
+          }
+     ]
+};
+/* [JSON Object:Auth] */
+{
+     "Auth_Id": "",
+     "Auth_Lst_Nam": "",
+     "Auth_Frst_Nam": "",
+     "Auth_Phn_Nbr": 0,
+     "Auth_Addr": "",
+     "Auth_Cty": "",
+     "Auth_St": null,
+     "Auth_Zip_Cd": null,
+     "Cntrct": 0,
+     "BookAuth": [
+          {
+               "Auth_Id": "",
+               "Book_Id": "",
+               "Rylty_Pmt": [
+                    {
+                         "Pmt_Dt": "",
+                         "Pmt_Amt": 0.0,
+                         "Rylty_Id": "",
+                         "Auth_Id": "",
+                         "Book_Id": ""
+                    }
+               ]
+          }
+     ]
+};
+/* [JSON Object:Publshr] */
+{
+     "Publshr_Id": "",
+     "Publshr_Nam": "",
+     "Publshr_Addr": "",
+     "Publshr_Cty": "",
+     "Publshr_St": null,
+     "Publshr_Zip_Cd": null,
+     "Publshr_Logo": {
+          "Publshr_Logo": "",
+          "Publshr_Publc_Rel_Inf": "",
+          "Publshr_Id": ""
+     },
+     "Book": [
+          {
+               "Book_Nam": "",
+               "Book_Typ": "",
+               "MRSP_Prc": 0,
+               "Advnc": 0,
+               "Rylty_Trm": 0,
+               "Book_Note": "",
+               "Publctn_Dt": "",
+               "Publshr_Id": "",
+               "Book_Id": "",
+               "BookAuth": [
+                    {
+                         "Auth_Id": "",
+                         "Book_Id": "",
+                         "Rylty_Pmt": [
+                              {
+                                   "Pmt_Dt": "",
+                                   "Pmt_Amt": 0.0,
+                                   "Rylty_Id": "",
+                                   "Auth_Id": "",
+                                   "Book_Id": ""
+                              }
+                         ]
+                    }
+               ],
+               "Book_YTD_Sls": {
+                    "Yr_To_Dt_Sls_Amt": 0.0,
+                    "Yr_To_Dt_Sls_Dt": "",
+                    "Book_Id": ""
+               },
+               "Ordr_Itm": [
+                    {
+                         "Itm_Seq_Nbr": 0,
+                         "Ordr_Qty": 0,
+                         "Ordr_Disc_Amt": 0.0,
+                         "Ordr_Prc": 0.0,
+                         "Disc_Typ": "",
+                         "Ordr_Nbr": 0,
+                         "Book_Id": "",
+                         "Ordr_Ship": [
+                              {
+                                   "Blng_Addr": "",
+                                   "Ship_Addr": "",
+                                   "Ship_Stat": "",
+                                   "Shed_Ship_Dt": "",
+                                   "Itm_Seq_Nbr": 0,
+                                   "Ordr_Nbr": 0,
+                                   "Ordr_Ship_Id": "",
+                                   "Bk_Ordr": {
+                                        "Reschd_Ship_Dt": "",
+                                        "Itm_Seq_Nbr": 0,
+                                        "Ordr_Nbr": 0,
+                                        "Ordr_Ship_Id": ""
+                                   }
+                              }
+                         ],
+                         "Book_Retrun": [
+                              {
+                                   "Book_Rtrn_Dt": "",
+                                   "Itm_Seq_Nbr": 0,
+                                   "Ordr_Nbr": 0,
+                                   "Book_Rtrn_Id": ""
+                              }
+                         ],
+                         "Rylty_Hist": [
+                              {
+                                   "Rylty_Hist_Id": "",
+                                   "Rylty_Pmt_Dt": "",
+                                   "Rylty_Pmt_Amt": 0.0,
+                                   "Rylty_Payee": "",
+                                   "Itm_Seq_Nbr": 0,
+                                   "Ordr_Nbr": 0
+                              }
+                         ]
+                    }
+               ]
+          }
+     ]
+};
+/* [JSON Object:Cust] */
+{
+     "Cust_Id": "",
+     "Cust_Frst_Nam": "",
+     "Cust_Lst_Nam": "",
+     "Cust_Cmpy_Nam": "",
+     "Cust_Stret_Addr": "",
+     "Cust_Cty": "",
+     "Cust_St": null,
+     "Cust_Zip_Cd": null,
+     "Cust_Phn_Area_Cd": 0,
+     "Cust_Phn_Nbr": 0,
+     "Cust_Fax_Area_Cd": 0,
+     "Cust_Fax_Nbr": 0,
+     "Purchase_Ordr": [
+          {
+               "Pmt_Trm": "",
+               "Ordr_Nbr": 0,
+               "Ordr_Dt": "",
+               "Cust_Id": "",
+               "Stor_Id": "",
+               "Ordr_Itm": [
+                    {
+                         "Itm_Seq_Nbr": 0,
+                         "Ordr_Qty": 0,
+                         "Ordr_Disc_Amt": 0.0,
+                         "Ordr_Prc": 0.0,
+                         "Disc_Typ": "",
+                         "Ordr_Nbr": 0,
+                         "Book_Id": "",
+                         "Ordr_Ship": [
+                              {
+                                   "Blng_Addr": "",
+                                   "Ship_Addr": "",
+                                   "Ship_Stat": "",
+                                   "Shed_Ship_Dt": "",
+                                   "Itm_Seq_Nbr": 0,
+                                   "Ordr_Nbr": 0,
+                                   "Ordr_Ship_Id": "",
+                                   "Bk_Ordr": {
+                                        "Reschd_Ship_Dt": "",
+                                        "Itm_Seq_Nbr": 0,
+                                        "Ordr_Nbr": 0,
+                                        "Ordr_Ship_Id": ""
+                                   }
+                              }
+                         ],
+                         "Book_Retrun": [
+                              {
+                                   "Book_Rtrn_Dt": "",
+                                   "Itm_Seq_Nbr": 0,
+                                   "Ordr_Nbr": 0,
+                                   "Book_Rtrn_Id": ""
+                              }
+                         ],
+                         "Rylty_Hist": [
+                              {
+                                   "Rylty_Hist_Id": "",
+                                   "Rylty_Pmt_Dt": "",
+                                   "Rylty_Pmt_Amt": 0.0,
+                                   "Rylty_Payee": "",
+                                   "Itm_Seq_Nbr": 0,
+                                   "Ordr_Nbr": 0
+                              }
+                         ]
+                    }
+               ]
+          }
+     ]
+};
+/* [JSON Object:Pmt] */
+{
+     "Pmt_Nbr": 0,
+     "Pmt_Typ": "",
+     "Pmt_Dt": "",
+     "Pmt_Amt": 0.0,
+     "Personal_Chk": {
+          "Chk_Nbr": 0,
+          "Chk_Acct_Nbr": 0,
+          "Chk_Bnk_Nbr": 0,
+          "Chk_Dvr_Lic_Nbr": "",
+          "Chk_Amt": 0,
+          "Pmt_Nbr": 0
+     },
+     "Mony_Ordr": {
+          "Mony_Ordr_Nbr": 0,
+          "Mony_Ordr_Amt": 0,
+          "Pmt_Nbr": 0
+     },
+     "Crd_Card": {
+          "Card_Nbr": 0,
+          "Card_Exp_Dt": "",
+          "Crd_Card_Typ": "",
+          "Card_Vndr_Nam": "",
+          "Crd_Card_Amt": 0,
+          "Pmt_Nbr": 0,
+          "Crd_Chk": [
+               {
+                    "Crd_Chk_Evnt": "",
+                    "Crd_Chk_Dt": "",
+                    "Crd_Stat": "",
+                    "Pmt_Nbr": 0
+               }
+          ]
+     }
+};
+/* [JSON Object:Rgn] */
+{
+     "Rgn_Id": "",
+     "Rgn_Area": "",
+     "Rgn_Desc": "",
+     "Stor_Nam": [
+          {
+               "Stor_Nam": "",
+               "Stor_Addr": "",
+               "Stor_Cty": "",
+               "Stor_St": null,
+               "Stor_Zip_Cd": null,
+               "Rgn_Id": "",
+               "Stor_Id": "",
+               "Purchase_Ordr": [
+                    {
+                         "Pmt_Trm": "",
+                         "Ordr_Nbr": 0,
+                         "Ordr_Dt": "",
+                         "Cust_Id": "",
+                         "Stor_Id": "",
+                         "Ordr_Itm": [
+                              {
+                                   "Itm_Seq_Nbr": 0,
+                                   "Ordr_Qty": 0,
+                                   "Ordr_Disc_Amt": 0.0,
+                                   "Ordr_Prc": 0.0,
+                                   "Disc_Typ": "",
+                                   "Ordr_Nbr": 0,
+                                   "Book_Id": "",
+                                   "Ordr_Ship": [
+                                        {
+                                             "Blng_Addr": "",
+                                             "Ship_Addr": "",
+                                             "Ship_Stat": "",
+                                             "Shed_Ship_Dt": "",
+                                             "Itm_Seq_Nbr": 0,
+                                             "Ordr_Nbr": 0,
+                                             "Ordr_Ship_Id": "",
+                                             "Bk_Ordr": {
+                                                  "Reschd_Ship_Dt": "",
+                                                  "Itm_Seq_Nbr": 0,
+                                                  "Ordr_Nbr": 0,
+                                                  "Ordr_Ship_Id": ""
+                                             }
+                                        }
+                                   ],
+                                   "Book_Retrun": [
+                                        {
+                                             "Book_Rtrn_Dt": "",
+                                             "Itm_Seq_Nbr": 0,
+                                             "Ordr_Nbr": 0,
+                                             "Book_Rtrn_Id": ""
+                                        }
+                                   ],
+                                   "Rylty_Hist": [
+                                        {
+                                             "Rylty_Hist_Id": "",
+                                             "Rylty_Pmt_Dt": "",
+                                             "Rylty_Pmt_Amt": 0.0,
+                                             "Rylty_Payee": "",
+                                             "Itm_Seq_Nbr": 0,
+                                             "Ordr_Nbr": 0
+                                        }
+                                   ]
+                              }
+                         ]
+                    }
+               ]
+          }
+     ]
+};
