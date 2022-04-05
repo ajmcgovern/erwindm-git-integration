@@ -1,0 +1,49 @@
+INSERT INTO `beer-sample` (KEY, VALUE)
+	VALUES ("beer-sample_5878680",
+{
+     "abv": 3.6,
+     "brewery_id": "21st_amendment_brewery_cafe",
+     "category": "Belgian and French Ale",
+     "description": "An American session beer. Load...",
+     "ibu": 0,
+     "name": "21A IPA",
+     "srm": 0,
+     "style": "American-Style India Pale Ale",
+     "type": "beer",
+     "upc": 0,
+     "updated": "2010-07-22 20:00:20",
+     "address": [
+          "407 Radam, F200"
+     ],
+     "city": "Austin",
+     "code": "94107",
+     "country": "Belgium",
+     "geo": {
+          "accuracy": "APPROXIMATE",
+          "lat": 59.7,
+          "lon": 10.2
+     },
+     "phone": "1-415-369-0900",
+     "state": "Vlaams Brabant",
+     "website": "http://512brewing.com/",
+     "doc_type_beer-sample_" : "brewery"
+
+});
+
+INSERT INTO `beer-sample` (KEY, VALUE)
+	VALUES ("beer-sample_3441771",
+{
+     "abv": 3.6,
+     "brewery_id": "21st_amendment_brewery_cafe",
+     "category": "Belgian and French Ale",
+     "description": "An American session beer. Load...",
+     "ibu": 0,
+     "name": "21A IPA",
+     "srm": 0,
+     "style": "American-Style India Pale Ale",
+     "type": "beer",
+     "upc": 0,
+     "updated": "2010-07-22 20:00:20",
+     "doc_type_beer-sample_" : "beer"
+
+});
