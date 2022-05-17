@@ -6353,3 +6353,12 @@ go
 
 
 
+
+
+
+set quoted_identifier on
+go
+
+ALTER TABLE [dbo].[DimAccount]
+ADD [DEMO]  char(18)  NULL
+go
