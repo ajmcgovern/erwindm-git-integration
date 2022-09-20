@@ -4280,3 +4280,506 @@ go
 
 
 
+
+
+
+ALTER TABLE [Publshr] DROP CONSTRAINT [DF__publisher__count__7D78A4E7]
+go
+
+ALTER TABLE [Bk]
+DROP CONSTRAINT [FK_Publshr_Bk]
+go
+
+ALTER TABLE [Publshr_Logo]
+DROP CONSTRAINT [FK_Publshr_Publshr_Logo]
+go
+
+ALTER TABLE [Publshr]
+DROP CONSTRAINT [UPKCL_pubind]
+go
+
+ALTER TABLE [Publshr_Logo]
+DROP CONSTRAINT [UPKCL_pubinfo]
+go
+
+execute sp_rename '[Publshr]', 'Publshr69KB3847001'
+go
+
+execute sp_rename '[Publshr_Logo]', 'Publshr_Logo69KB3847000'
+go
+
+ALTER TABLE [Bk]
+ADD [demo_id]  char(18)  NULL
+go
+
+CREATE TABLE [demo]
+( 
+	[demo_id]            char(18)  NOT NULL 
+)
+go
+
+CREATE TABLE [Publshr]
+( 
+	[Publshr_Identification] [id] ,
+	[Publshr_Nam]        char varying(40)  NULL ,
+	[Publshr_Addr]       [STREET_ADDRESS] ,
+	[Publshr_Cty]        [CITY] ,
+	[Publshr_St]         [St] 
+	CONSTRAINT [DF__publisher__count__7D78A4E7]
+		 DEFAULT  'USA',
+	[Publshr_Zip_Cd]     [ZIP_CODE] ,
+	[demo_id]            char(18)  NOT NULL 
+)
+go
+
+CREATE TABLE [Publshr_Logo]
+( 
+	[Publshr_Identification] [id] ,
+	[Publshr_Logo]       character(500)  NULL ,
+	[Publshr_Public_Rel_Inf] varchar(200)  NULL ,
+	[demo_id]            char(18)  NOT NULL 
+)
+go
+
+CREATE VIEW [Publisher_View]([Emp_Frst_Nam],[Emp_Lst_Nam],[Publshr_Nam],[Bk_Nam],[Yr_To_Dt_Sls_Amt])
+AS
+SELECT [Emp].[Emp_Frst_Nam],[Emp].[Emp_Lst_Nam],[Publshr].[Publshr_Nam],[Bk].[Bk_Nam],[Bk_YTD_Sls].[Yr_To_Dt_Sls_Amt]
+	FROM [Publshr],[Bk],[Bk_YTD_Sls],[Emp]
+go
+
+ALTER TABLE [demo]
+ADD CONSTRAINT [XPKdemo] PRIMARY KEY  CLUSTERED ([demo_id] ASC)
+go
+
+ALTER TABLE [Publshr]
+ADD CONSTRAINT [UPKCL_pubind] PRIMARY KEY  NONCLUSTERED ([Publshr_Identification] ASC,[demo_id] ASC)
+go
+
+
+INSERT INTO [Publshr] ([Publshr_Identification], [Publshr_Nam], [Publshr_Addr], [Publshr_Cty], [Publshr_St], [Publshr_Zip_Cd]) SELECT [Publshr_Identification], [Publshr_Nam], [Publshr_Addr], [Publshr_Cty], [Publshr_St], [Publshr_Zip_Cd] FROM Publshr69KB3847001
+
+go
+
+ALTER TABLE [Publshr_Logo]
+ADD CONSTRAINT [UPKCL_pubinfo] PRIMARY KEY  NONCLUSTERED ([Publshr_Identification] ASC,[demo_id] ASC)
+go
+
+
+INSERT INTO [Publshr_Logo] ([Publshr_Identification], [Publshr_Logo], [Publshr_Public_Rel_Inf]) SELECT [Publshr_Identification], [Publshr_Logo], [Publshr_Public_Rel_Inf] FROM Publshr_Logo69KB3847000
+
+go
+
+ALTER TABLE [Publshr]
+	ADD CONSTRAINT [FK_demo_Publshr] FOREIGN KEY ([demo_id]) REFERENCES [demo]([demo_id])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE [Bk]
+	ADD CONSTRAINT [FK_Publshr_Bk] FOREIGN KEY ([Publshr_Identification],[demo_id]) REFERENCES [Publshr]([Publshr_Identification],[demo_id])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE [Publshr_Logo]
+	ADD CONSTRAINT [FK_Publshr_Publshr_Logo] FOREIGN KEY ([Publshr_Identification],[demo_id]) REFERENCES [Publshr]([Publshr_Identification],[demo_id])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+CREATE TRIGGER Trigger_1674 ON demo FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on demo */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* demo  Publshr on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00010d86", PARENT_OWNER="", PARENT_TABLE="demo"
+    CHILD_OWNER="", CHILD_TABLE="Publshr"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_demo_Publshr", FK_COLUMNS="demo_id" */
+    IF EXISTS (
+      SELECT * FROM deleted,Publshr
+      WHERE
+        /*  %JoinFKPK(Publshr,deleted," = "," AND") */
+        Publshr.demo_id = deleted.demo_id
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete demo because Publshr exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER Trigger_1675 ON demo FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on demo */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insdemo_id char(18),
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* demo  Publshr on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00012271", PARENT_OWNER="", PARENT_TABLE="demo"
+    CHILD_OWNER="", CHILD_TABLE="Publshr"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_demo_Publshr", FK_COLUMNS="demo_id" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(demo_id)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,Publshr
+      WHERE
+        /*  %JoinFKPK(Publshr,deleted," = "," AND") */
+        Publshr.demo_id = deleted.demo_id
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update demo because Publshr exists.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER tD_Publisher ON Publshr FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on Publshr */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* Publshr  Publshr_Logo on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00034867", PARENT_OWNER="", PARENT_TABLE="Publshr"
+    CHILD_OWNER="", CHILD_TABLE="Publshr_Logo"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_Publshr_Publshr_Logo", FK_COLUMNS="Publshr_Identification""demo_id" */
+    IF EXISTS (
+      SELECT * FROM deleted,Publshr_Logo
+      WHERE
+        /*  %JoinFKPK(Publshr_Logo,deleted," = "," AND") */
+        Publshr_Logo.Publshr_Identification = deleted.Publshr_Identification AND
+        Publshr_Logo.demo_id = deleted.demo_id
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete Publshr because Publshr_Logo exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* Publshr  Bk on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="Publshr"
+    CHILD_OWNER="", CHILD_TABLE="Bk"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_Publshr_Bk", FK_COLUMNS="Publshr_Identification""demo_id" */
+    IF EXISTS (
+      SELECT * FROM deleted,Bk
+      WHERE
+        /*  %JoinFKPK(Bk,deleted," = "," AND") */
+        Bk.Publshr_Identification = deleted.Publshr_Identification AND
+        Bk.demo_id = deleted.demo_id
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete Publshr because Bk exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* demo  Publshr on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="demo"
+    CHILD_OWNER="", CHILD_TABLE="Publshr"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_demo_Publshr", FK_COLUMNS="demo_id" */
+    IF EXISTS (SELECT * FROM deleted,demo
+      WHERE
+        /* %JoinFKPK(deleted,demo," = "," AND") */
+        deleted.demo_id = demo.demo_id AND
+        NOT EXISTS (
+          SELECT * FROM Publshr
+          WHERE
+            /* %JoinFKPK(Publshr,demo," = "," AND") */
+            Publshr.demo_id = demo.demo_id
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last Publshr because demo exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER tU_Publisher ON Publshr FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on Publshr */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insPublshr_Identification id, 
+           @insdemo_id char(18),
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* Publshr  Publshr_Logo on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="0003e065", PARENT_OWNER="", PARENT_TABLE="Publshr"
+    CHILD_OWNER="", CHILD_TABLE="Publshr_Logo"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_Publshr_Publshr_Logo", FK_COLUMNS="Publshr_Identification""demo_id" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(Publshr_Identification) OR
+    UPDATE(demo_id)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,Publshr_Logo
+      WHERE
+        /*  %JoinFKPK(Publshr_Logo,deleted," = "," AND") */
+        Publshr_Logo.Publshr_Identification = deleted.Publshr_Identification AND
+        Publshr_Logo.demo_id = deleted.demo_id
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update Publshr because Publshr_Logo exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* Publshr  Bk on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="Publshr"
+    CHILD_OWNER="", CHILD_TABLE="Bk"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_Publshr_Bk", FK_COLUMNS="Publshr_Identification""demo_id" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(Publshr_Identification) OR
+    UPDATE(demo_id)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,Bk
+      WHERE
+        /*  %JoinFKPK(Bk,deleted," = "," AND") */
+        Bk.Publshr_Identification = deleted.Publshr_Identification AND
+        Bk.demo_id = deleted.demo_id
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update Publshr because Bk exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* demo  Publshr on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="demo"
+    CHILD_OWNER="", CHILD_TABLE="Publshr"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_demo_Publshr", FK_COLUMNS="demo_id" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(demo_id)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,demo
+        WHERE
+          /* %JoinFKPK(inserted,demo) */
+          inserted.demo_id = demo.demo_id
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update Publshr because demo does not exist.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER tD_Publisher_Logo ON Publshr_Logo FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on Publshr_Logo */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* Publshr  Publshr_Logo on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="000196ab", PARENT_OWNER="", PARENT_TABLE="Publshr"
+    CHILD_OWNER="", CHILD_TABLE="Publshr_Logo"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_Publshr_Publshr_Logo", FK_COLUMNS="Publshr_Identification""demo_id" */
+    IF EXISTS (SELECT * FROM deleted,Publshr
+      WHERE
+        /* %JoinFKPK(deleted,Publshr," = "," AND") */
+        deleted.Publshr_Identification = Publshr.Publshr_Identification AND
+        deleted.demo_id = Publshr.demo_id AND
+        NOT EXISTS (
+          SELECT * FROM Publshr_Logo
+          WHERE
+            /* %JoinFKPK(Publshr_Logo,Publshr," = "," AND") */
+            Publshr_Logo.Publshr_Identification = Publshr.Publshr_Identification AND
+            Publshr_Logo.demo_id = Publshr.demo_id
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last Publshr_Logo because Publshr exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER tU_Publisher_Logo ON Publshr_Logo FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on Publshr_Logo */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insPublshr_Identification id, 
+           @insdemo_id char(18),
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* Publshr  Publshr_Logo on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="0001a181", PARENT_OWNER="", PARENT_TABLE="Publshr"
+    CHILD_OWNER="", CHILD_TABLE="Publshr_Logo"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_Publshr_Publshr_Logo", FK_COLUMNS="Publshr_Identification""demo_id" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(Publshr_Identification) OR
+    UPDATE(demo_id)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,Publshr
+        WHERE
+          /* %JoinFKPK(inserted,Publshr) */
+          inserted.Publshr_Identification = Publshr.Publshr_Identification and
+          inserted.demo_id = Publshr.demo_id
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update Publshr_Logo because Publshr does not exist.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+
+DROP TABLE Publshr69KB3847001
+go
+
+
+DROP TABLE Publshr_Logo69KB3847000
+go
