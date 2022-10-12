@@ -2465,3 +2465,258 @@ END
 go
 
 
+
+
+ALTER TABLE dbo.DimCustomer
+DROP CONSTRAINT FK_DimCustomer_DimGeography
+go
+
+ALTER TABLE dbo.DimCustomer
+DROP CONSTRAINT IX_DimCustomer_CustomerAlternateKey
+go
+
+ALTER TABLE dbo.DimCustomer
+DROP CONSTRAINT PK_DimCustomer_CustomerKey
+go
+
+CREATE TABLE dbo.DimCustomer
+( 
+	CustomerKey          Int  NOT NULL  IDENTITY ( 1,1 ) ,
+	GeographyKey         Int  NULL ,
+	CustomerAlternateKey Nvarchar(15)  NOT NULL ,
+	Title                Nvarchar(8)  NULL ,
+	FirstName            Nvarchar(50)  NULL ,
+	MiddleName           Nvarchar(50)  NULL ,
+	LastName             Nvarchar(60)  NULL ,
+	NameStyle            Bit  NULL ,
+	BirthDate            Date  NULL ,
+	MaritalStatus        Nchar(1)  NULL ,
+	Suffix               Nvarchar(10)  NULL ,
+	Gender               Nvarchar(1)  NULL ,
+	EmailAddress         Nvarchar(50)  NULL ,
+	YearlyIncome         Money  NULL ,
+	TotalChildren        Tinyint  NULL ,
+	NumberChildrenAtHome Tinyint  NULL ,
+	EnglishEducation     Nvarchar(40)  NULL ,
+	SpanishEducation     Nvarchar(40)  NULL ,
+	FrenchEducation      Nvarchar(40)  NULL ,
+	EnglishOccupation    Nvarchar(100)  NULL ,
+	SpanishOccupation    Nvarchar(100)  NULL ,
+	FrenchOccupation     Nvarchar(100)  NULL ,
+	HouseOwnerFlag       Nchar(1)  NULL ,
+	NumberCarsOwned      Tinyint  NULL ,
+	AddressLine1         Nvarchar(120)  NULL ,
+	AddressLine2         Nvarchar(120)  NULL ,
+	Phone                Nvarchar(20)  NULL ,
+	DateFirstPurchase    Date  NULL ,
+	CommuteDistance      Nvarchar(15)  NULL 
+)
+go
+
+ALTER TABLE dbo.DimCustomer
+ADD CONSTRAINT PK_DimCustomer_CustomerKey PRIMARY KEY  CLUSTERED (CustomerKey ASC)
+go
+
+ALTER TABLE dbo.DimCustomer
+ADD CONSTRAINT IX_DimCustomer_CustomerAlternateKey UNIQUE (CustomerAlternateKey  ASC)
+go
+
+ALTER TABLE dbo.DimCustomer
+	ADD CONSTRAINT FK_DimCustomer_DimGeography FOREIGN KEY (GeographyKey) REFERENCES dbo.DimGeography(GeographyKey)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE dbo.FactInternetSales
+	ADD CONSTRAINT FK_FactInternetSales_DimCustomer FOREIGN KEY (CustomerKey) REFERENCES dbo.DimCustomer(CustomerKey)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE dbo.FactSurveyResponse
+	ADD CONSTRAINT FK_FactSurveyResponse_CustomerKey FOREIGN KEY (CustomerKey) REFERENCES dbo.DimCustomer(CustomerKey)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+
+CREATE TRIGGER dbo.tD_DimCustomer ON dbo.DimCustomer FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on DimCustomer */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* dbo.DimCustomer  dbo.FactSurveyResponse on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="0003e1ec", PARENT_OWNER="dbo", PARENT_TABLE="DimCustomer"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactSurveyResponse"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactSurveyResponse_CustomerKey", FK_COLUMNS="CustomerKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactSurveyResponse
+      WHERE
+        /*  %JoinFKPK(dbo.FactSurveyResponse,deleted," = "," AND") */
+        dbo.FactSurveyResponse.CustomerKey = deleted.CustomerKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimCustomer because dbo.FactSurveyResponse exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimCustomer  dbo.FactInternetSales on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimCustomer"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimCustomer", FK_COLUMNS="CustomerKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactInternetSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactInternetSales,deleted," = "," AND") */
+        dbo.FactInternetSales.CustomerKey = deleted.CustomerKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimCustomer because dbo.FactInternetSales exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimGeography  dbo.DimCustomer on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimGeography"
+    CHILD_OWNER="dbo", CHILD_TABLE="DimCustomer"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_DimCustomer_DimGeography", FK_COLUMNS="GeographyKey" */
+    IF EXISTS (SELECT * FROM deleted,dbo.DimGeography
+      WHERE
+        /* %JoinFKPK(deleted,dbo.DimGeography," = "," AND") */
+        deleted.GeographyKey = dbo.DimGeography.GeographyKey AND
+        NOT EXISTS (
+          SELECT * FROM dbo.DimCustomer
+          WHERE
+            /* %JoinFKPK(dbo.DimCustomer,dbo.DimGeography," = "," AND") */
+            dbo.DimCustomer.GeographyKey = dbo.DimGeography.GeographyKey
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last dbo.DimCustomer because dbo.DimGeography exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER dbo.tU_DimCustomer ON dbo.DimCustomer FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on DimCustomer */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insCustomerKey Int,
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* dbo.DimCustomer  dbo.FactSurveyResponse on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00044ea1", PARENT_OWNER="dbo", PARENT_TABLE="DimCustomer"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactSurveyResponse"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactSurveyResponse_CustomerKey", FK_COLUMNS="CustomerKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(CustomerKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactSurveyResponse
+      WHERE
+        /*  %JoinFKPK(dbo.FactSurveyResponse,deleted," = "," AND") */
+        dbo.FactSurveyResponse.CustomerKey = deleted.CustomerKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimCustomer because dbo.FactSurveyResponse exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimCustomer  dbo.FactInternetSales on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimCustomer"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimCustomer", FK_COLUMNS="CustomerKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(CustomerKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactInternetSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactInternetSales,deleted," = "," AND") */
+        dbo.FactInternetSales.CustomerKey = deleted.CustomerKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimCustomer because dbo.FactInternetSales exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimGeography  dbo.DimCustomer on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimGeography"
+    CHILD_OWNER="dbo", CHILD_TABLE="DimCustomer"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_DimCustomer_DimGeography", FK_COLUMNS="GeographyKey" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(GeographyKey)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,dbo.DimGeography
+        WHERE
+          /* %JoinFKPK(inserted,dbo.DimGeography) */
+          inserted.GeographyKey = dbo.DimGeography.GeographyKey
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    select @nullcnt = count(*) from inserted where
+      inserted.GeographyKey IS NULL
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update dbo.DimCustomer because dbo.DimGeography does not exist.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
