@@ -4103,3 +4103,173 @@ go
 
 
 
+
+
+
+ALTER TABLE [Bk_YTD_Sls] DROP CONSTRAINT [DF__system__date_522928865]
+go
+
+
+ALTER TABLE [Bk] DROP CONSTRAINT [DF__titles__type__00551192]
+go
+
+
+ALTER TABLE [Bk] DROP CONSTRAINT [DF__system__date_163967404]
+go
+
+ALTER TABLE [Rylty_Pmt]
+DROP CONSTRAINT [FK_BkAuth_Rylty_Pmt]
+go
+
+ALTER TABLE [Bk]
+DROP CONSTRAINT [FK_Publshr_Bk]
+go
+
+ALTER TABLE [Rylty_Hist]
+DROP CONSTRAINT [FK_Ordr_itm_Rylty_Hist]
+go
+
+ALTER TABLE [Bk_Retrun]
+DROP CONSTRAINT [FK_Ordr_itm_Bk_Retrun]
+go
+
+ALTER TABLE [Ordr_Shipment]
+DROP CONSTRAINT [FK_Ordr_itm_Ordr_Shipment]
+go
+
+ALTER TABLE [Ordr_itm]
+DROP CONSTRAINT [FK_Bk_Ordr_itm]
+go
+
+ALTER TABLE [Bk_YTD_Sls]
+DROP CONSTRAINT [FK_Bk_Bk_YTD_Sls]
+go
+
+ALTER TABLE [BkAuth]
+DROP CONSTRAINT [FK_Bk_BkAuth]
+go
+
+ALTER TABLE [Bk_YTD_Sls]
+DROP CONSTRAINT [XPKBook_YTD_Sales]
+go
+
+ALTER TABLE [BkAuth]
+DROP CONSTRAINT [UPKCL_taind]
+go
+
+ALTER TABLE [Bk]
+DROP CONSTRAINT [UPKCL_titleidind]
+go
+
+ALTER TABLE [Ordr_itm]
+DROP CONSTRAINT [XPKOrder_Item]
+go
+
+ALTER TABLE [Rylty_Pmt]
+DROP CONSTRAINT [XPKRoyalty_Payment]
+go
+
+DROP INDEX [titleind] ON [Bk]
+go
+
+execute sp_rename '[Bk_YTD_Sls]', 'Bk_YTD_Sls6ACF4817000'
+go
+
+ALTER TABLE [BkAuth]
+  DROP COLUMN [Bk_Identification]
+go
+
+DROP VIEW [titleview]
+go
+
+DROP VIEW [Order_View]
+go
+
+DROP VIEW [Publisher_View]
+go
+
+DROP TABLE [Bk]
+go
+
+ALTER TABLE [Ordr_itm]
+  DROP COLUMN [Bk_Identification]
+go
+
+ALTER TABLE [Rylty_Pmt]
+  DROP COLUMN [Bk_Identification]
+go
+
+CREATE TABLE [Bk_YTD_Sls]
+( 
+	[Yr_To_Dt_Sls_Amt]   DECIMAL(10,2)  NULL ,
+	[Yr_To_Dt_Sls_Dt]    [SystemDate] 
+	CONSTRAINT [DF__system__date_522928865]
+		 DEFAULT  SYSDATE
+)
+go
+
+CREATE VIEW [Publisher_View]([Emp_Frst_Nam],[Emp_Lst_Nam],[Publshr_Nam],[Yr_To_Dt_Sls_Amt])
+AS
+SELECT [Emp].[Emp_Frst_Nam],[Emp].[Emp_Lst_Nam],[Publshr].[Publshr_Nam],[Bk_YTD_Sls].[Yr_To_Dt_Sls_Amt]
+	FROM [Publshr],[Bk_YTD_Sls],[Emp]
+go
+
+CREATE VIEW titleview
+   (Book_Nam, Auth_Id, Auth_Lst_Nam, MRSP_Prc, Publshr_Id)
+AS SELECT
+   Book.Book_Nam, Auth.Auth_Id, Auth.Auth_Lst_Nam,
+   Book.MRSP_Prc, Book.Publshr_Id
+FROM Book, Auth, BookAuth
+
+go
+
+CREATE VIEW [Order_View]([Stor_Nam],[Ordr_Nbr],[Ordr_Dt],[Ordr_Qty],[Ordr_Disc_Amt],[Ordr_Price])
+AS
+SELECT [Stor_Nam].[Stor_Nam],[Purchase_Ordr].[Ordr_Nbr],[Purchase_Ordr].[Ordr_Dt],[Ordr_itm].[Ordr_Qty],[Ordr_itm].[Ordr_Disc_Amt],[Ordr_itm].[Ordr_Price]
+	FROM [Ordr_itm],[Purchase_Ordr],[Stor_Nam]
+go
+
+
+INSERT INTO [Bk_YTD_Sls] ([Yr_To_Dt_Sls_Amt], [Yr_To_Dt_Sls_Dt]) SELECT CONVERT(DECIMAL(10,2),Yr_To_Dt_Sls_Amt), [Yr_To_Dt_Sls_Dt] FROM Bk_YTD_Sls6ACF4817000
+
+go
+
+ALTER TABLE [BkAuth]
+ADD CONSTRAINT [UPKCL_taind] PRIMARY KEY  CLUSTERED ([Auth_Identification] ASC)
+go
+
+ALTER TABLE [Ordr_itm]
+ADD CONSTRAINT [XPKOrder_Item] PRIMARY KEY  CLUSTERED ([Ordr_Nbr] ASC,[itm_Seq_Nbr] ASC)
+go
+
+ALTER TABLE [Rylty_Pmt]
+ADD CONSTRAINT [XPKRoyalty_Payment] PRIMARY KEY  NONCLUSTERED ([Auth_Identification] ASC,[Rylty_Identification] ASC)
+go
+
+ALTER TABLE [Rylty_Pmt]
+	ADD CONSTRAINT [FK_BkAuth_Rylty_Pmt] FOREIGN KEY ([Auth_Identification]) REFERENCES [BkAuth]([Auth_Identification])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE [Rylty_Hist]
+	ADD CONSTRAINT [FK_Ordr_itm_Rylty_Hist] FOREIGN KEY ([Ordr_Nbr],[itm_Seq_Nbr]) REFERENCES [Ordr_itm]([Ordr_Nbr],[itm_Seq_Nbr])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE [Bk_Retrun]
+	ADD CONSTRAINT [FK_Ordr_itm_Bk_Retrun] FOREIGN KEY ([Ordr_Nbr],[itm_Seq_Nbr]) REFERENCES [Ordr_itm]([Ordr_Nbr],[itm_Seq_Nbr])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE [Ordr_Shipment]
+	ADD CONSTRAINT [FK_Ordr_itm_Ordr_Shipment] FOREIGN KEY ([Ordr_Nbr],[itm_Seq_Nbr]) REFERENCES [Ordr_itm]([Ordr_Nbr],[itm_Seq_Nbr])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+
+DROP TABLE Bk_YTD_Sls6ACF4817000
+go
