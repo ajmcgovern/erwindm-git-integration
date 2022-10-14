@@ -1,0 +1,2467 @@
+
+CREATE TABLE dbo.DimCurrency
+( 
+	CurrencyKey          Int  NOT NULL  IDENTITY ( 1,1 ) ,
+	CurrencyAlternateKey Nchar(3)  NOT NULL ,
+	CurrencyName         Nvarchar(50)  NOT NULL 
+)
+go
+
+ALTER TABLE dbo.DimCurrency
+	ADD CONSTRAINT PK_DimCurrency_CurrencyKey PRIMARY KEY  CLUSTERED (CurrencyKey ASC)
+go
+
+ALTER TABLE dbo.DimCurrency
+	ADD CONSTRAINT AK_DimCurrency_CurrencyAlternateKey UNIQUE (CurrencyAlternateKey  ASC)
+go
+
+CREATE TABLE dbo.DimCustomer
+( 
+	CustomerKey          Int  NOT NULL  IDENTITY ( 1,1 ) ,
+	GeographyKey         Int  NULL ,
+	CustomerAlternateKey Nvarchar(15)  NOT NULL ,
+	Title                Nvarchar(8)  NULL ,
+	FirstName            Nvarchar(50)  NULL ,
+	MiddleName           Nvarchar(50)  NULL ,
+	LastName             Nvarchar(50)  NULL ,
+	NameStyle            Bit  NULL ,
+	BirthDate            Date  NULL ,
+	MaritalStatus        Nchar(1)  NULL ,
+	Suffix               Nvarchar(10)  NULL ,
+	Gender               Nvarchar(1)  NULL ,
+	EmailAddress         Nvarchar(50)  NULL ,
+	YearlyIncome         Money  NULL ,
+	TotalChildren        Tinyint  NULL ,
+	NumberChildrenAtHome Tinyint  NULL ,
+	EnglishEducation     Nvarchar(40)  NULL ,
+	SpanishEducation     Nvarchar(40)  NULL ,
+	FrenchEducation      Nvarchar(40)  NULL ,
+	EnglishOccupation    Nvarchar(100)  NULL ,
+	SpanishOccupation    Nvarchar(100)  NULL ,
+	FrenchOccupation     Nvarchar(100)  NULL ,
+	HouseOwnerFlag       Nchar(1)  NULL ,
+	NumberCarsOwned      Tinyint  NULL ,
+	AddressLine1         Nvarchar(120)  NULL ,
+	AddressLine2         Nvarchar(120)  NULL ,
+	Phone                Nvarchar(20)  NULL ,
+	DateFirstPurchase    Date  NULL ,
+	CommuteDistance      Nvarchar(15)  NULL 
+)
+go
+
+ALTER TABLE dbo.DimCustomer
+	ADD CONSTRAINT PK_DimCustomer_CustomerKey PRIMARY KEY  CLUSTERED (CustomerKey ASC)
+go
+
+ALTER TABLE dbo.DimCustomer
+	ADD CONSTRAINT IX_DimCustomer_CustomerAlternateKey UNIQUE (CustomerAlternateKey  ASC)
+go
+
+CREATE TABLE dbo.DimDate
+( 
+	DateKey              Int  NOT NULL ,
+	FullDateAlternateKey Date  NOT NULL ,
+	DayNumberOfWeek      Tinyint  NOT NULL ,
+	EnglishDayNameOfWeek Nvarchar(10)  NOT NULL ,
+	SpanishDayNameOfWeek Nvarchar(10)  NOT NULL ,
+	FrenchDayNameOfWeek  Nvarchar(10)  NOT NULL ,
+	DayNumberOfMonth     Tinyint  NOT NULL ,
+	DayNumberOfYear      Smallint  NOT NULL ,
+	WeekNumberOfYear     Tinyint  NOT NULL ,
+	EnglishMonthName     Nvarchar(10)  NOT NULL ,
+	SpanishMonthName     Nvarchar(10)  NOT NULL ,
+	FrenchMonthName      Nvarchar(10)  NOT NULL ,
+	MonthNumberOfYear    Tinyint  NOT NULL ,
+	CalendarQuarter      Tinyint  NOT NULL ,
+	CalendarYear         Smallint  NOT NULL ,
+	CalendarSemester     Tinyint  NOT NULL ,
+	FiscalQuarter        Tinyint  NOT NULL ,
+	FiscalYear           Smallint  NOT NULL ,
+	FiscalSemester       Tinyint  NOT NULL 
+)
+go
+
+ALTER TABLE dbo.DimDate
+	ADD CONSTRAINT PK_DimDate_DateKey PRIMARY KEY  CLUSTERED (DateKey ASC)
+go
+
+ALTER TABLE dbo.DimDate
+	ADD CONSTRAINT AK_DimDate_FullDateAlternateKey UNIQUE (FullDateAlternateKey  ASC)
+go
+
+CREATE TABLE dbo.DimProduct
+( 
+	ProductKey           Int  NOT NULL  IDENTITY ( 1,1 ) ,
+	ProductAlternateKey  Nvarchar(25)  NULL ,
+	ProductSubcategoryKey Int  NULL ,
+	WeightUnitMeasureCode Nchar(3)  NULL ,
+	SizeUnitMeasureCode  Nchar(3)  NULL ,
+	EnglishProductName   Nvarchar(50)  NOT NULL ,
+	SpanishProductName   Nvarchar(50)  NOT NULL ,
+	FrenchProductName    Nvarchar(50)  NOT NULL ,
+	StandardCost         Money  NULL ,
+	FinishedGoodsFlag    Bit  NOT NULL ,
+	Color                Nvarchar(15)  NOT NULL ,
+	SafetyStockLevel     Smallint  NULL ,
+	ReorderPoint         Smallint  NULL ,
+	ListPrice            Money  NULL ,
+	Size                 Nvarchar(50)  NULL ,
+	SizeRange            Nvarchar(50)  NULL ,
+	Weight               Float  NULL ,
+	DaysToManufacture    Int  NULL ,
+	ProductLine          Nchar(2)  NULL ,
+	DealerPrice          Money  NULL ,
+	Class                Nchar(2)  NULL ,
+	Style                Nchar(2)  NULL ,
+	ModelName            Nvarchar(50)  NULL ,
+	LargePhoto           Varbinary(max)  NULL ,
+	EnglishDescription   Nvarchar(400)  NULL ,
+	FrenchDescription    Nvarchar(400)  NULL ,
+	ChineseDescription   Nvarchar(400)  NULL ,
+	ArabicDescription    Nvarchar(400)  NULL ,
+	HebrewDescription    Nvarchar(400)  NULL ,
+	ThaiDescription      Nvarchar(400)  NULL ,
+	GermanDescription    Nvarchar(400)  NULL ,
+	JapaneseDescription  Nvarchar(400)  NULL ,
+	TurkishDescription   Nvarchar(400)  NULL ,
+	StartDate            Datetime  NULL ,
+	EndDate              Datetime  NULL ,
+	Status               Nvarchar(7)  NULL 
+)
+go
+
+ALTER TABLE dbo.DimProduct
+	ADD CONSTRAINT PK_DimProduct_ProductKey PRIMARY KEY  CLUSTERED (ProductKey ASC)
+go
+
+ALTER TABLE dbo.DimProduct
+	ADD CONSTRAINT AK_DimProduct_ProductAlternateKey_StartDate UNIQUE (ProductAlternateKey  ASC,StartDate  ASC)
+go
+
+CREATE TABLE dbo.DimPromotion
+( 
+	PromotionKey         Int  NOT NULL  IDENTITY ( 1,1 ) ,
+	PromotionAlternateKey Int  NULL ,
+	EnglishPromotionName Nvarchar(255)  NULL ,
+	SpanishPromotionName Nvarchar(255)  NULL ,
+	FrenchPromotionName  Nvarchar(255)  NULL ,
+	DiscountPct          Float  NULL ,
+	EnglishPromotionType Nvarchar(50)  NULL ,
+	SpanishPromotionType Nvarchar(50)  NULL ,
+	FrenchPromotionType  Nvarchar(50)  NULL ,
+	EnglishPromotionCategory Nvarchar(50)  NULL ,
+	SpanishPromotionCategory Nvarchar(50)  NULL ,
+	FrenchPromotionCategory Nvarchar(50)  NULL ,
+	StartDate            Datetime  NOT NULL ,
+	EndDate              Datetime  NULL ,
+	MinQty               Int  NULL ,
+	MaxQty               Int  NULL 
+)
+go
+
+ALTER TABLE dbo.DimPromotion
+	ADD CONSTRAINT PK_DimPromotion_PromotionKey PRIMARY KEY  CLUSTERED (PromotionKey ASC)
+go
+
+ALTER TABLE dbo.DimPromotion
+	ADD CONSTRAINT AK_DimPromotion_PromotionAlternateKey UNIQUE (PromotionAlternateKey  ASC)
+go
+
+CREATE TABLE dbo.DimSalesTerritory
+( 
+	SalesTerritoryKey    Int  NOT NULL  IDENTITY ( 1,1 ) ,
+	SalesTerritoryAlternateKey Int  NULL ,
+	SalesTerritoryRegion Nvarchar(50)  NOT NULL ,
+	SalesTerritoryCountry Nvarchar(50)  NOT NULL ,
+	SalesTerritoryGroup  Nvarchar(50)  NULL 
+)
+go
+
+ALTER TABLE dbo.DimSalesTerritory
+	ADD CONSTRAINT PK_DimSalesTerritory_SalesTerritoryKey PRIMARY KEY  CLUSTERED (SalesTerritoryKey ASC)
+go
+
+ALTER TABLE dbo.DimSalesTerritory
+	ADD CONSTRAINT AK_DimSalesTerritory_SalesTerritoryAlternateKey UNIQUE (SalesTerritoryAlternateKey  ASC)
+go
+
+CREATE TABLE dbo.FactInternetSales
+( 
+	ProductKey           Int  NOT NULL ,
+	OrderDateKey         Int  NOT NULL ,
+	DueDateKey           Int  NOT NULL ,
+	ShipDateKey          Int  NOT NULL ,
+	CustomerKey          Int  NOT NULL ,
+	PromotionKey         Int  NOT NULL ,
+	CurrencyKey          Int  NOT NULL ,
+	SalesTerritoryKey    Int  NOT NULL ,
+	SalesOrderNumber     Nvarchar(20)  NOT NULL ,
+	SalesOrderLineNumber Tinyint  NOT NULL ,
+	RevisionNumber       Tinyint  NOT NULL ,
+	OrderQuantity        Smallint  NOT NULL ,
+	UnitPrice            Money  NOT NULL ,
+	ExtendedAmount       Money  NOT NULL ,
+	UnitPriceDiscountPct Float  NOT NULL ,
+	DiscountAmount       Float  NOT NULL ,
+	ProductStandardCost  Money  NOT NULL ,
+	TotalProductCost     Money  NOT NULL ,
+	SalesAmount          Money  NOT NULL ,
+	TaxAmt               Money  NOT NULL ,
+	Freight              Money  NOT NULL ,
+	CarrierTrackingNumber Nvarchar(25)  NULL ,
+	CustomerPONumber     Nvarchar(25)  NULL ,
+	DateKey              Int  NULL 
+)
+go
+
+ALTER TABLE dbo.FactInternetSales
+	ADD CONSTRAINT PK_FactInternetSales_SalesOrderNumber_SalesOrderLineNumber PRIMARY KEY  CLUSTERED (SalesOrderNumber ASC,SalesOrderLineNumber ASC)
+go
+
+CREATE TABLE dbo.FactInternetSalesReason
+( 
+	SalesOrderNumber     Nvarchar(20)  NOT NULL ,
+	SalesOrderLineNumber Tinyint  NOT NULL ,
+	SalesReasonKey       Int  NOT NULL 
+)
+go
+
+ALTER TABLE dbo.FactInternetSalesReason
+	ADD CONSTRAINT PK_FactInternetSalesReason_SalesOrderNumber_SalesOrderLineNumber_SalesReasonKey PRIMARY KEY  CLUSTERED (SalesOrderNumber ASC,SalesOrderLineNumber ASC,SalesReasonKey ASC)
+go
+
+
+ALTER TABLE dbo.DimCustomer
+	ADD CONSTRAINT FK_DimCustomer_DimGeography FOREIGN KEY (GeographyKey) REFERENCES dbo.DimGeography(GeographyKey)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+
+ALTER TABLE dbo.DimProduct
+	ADD CONSTRAINT FK_DimProduct_DimProductSubcategory FOREIGN KEY (ProductSubcategoryKey) REFERENCES dbo.DimProductSubcategory(ProductSubcategoryKey)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+
+ALTER TABLE dbo.FactInternetSales
+	ADD CONSTRAINT FK_FactInternetSales_DimCustomer FOREIGN KEY (CustomerKey) REFERENCES dbo.DimCustomer(CustomerKey)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE dbo.FactInternetSales
+	ADD CONSTRAINT FK_FactInternetSales_DimDate FOREIGN KEY (DateKey) REFERENCES dbo.DimDate(DateKey)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE dbo.FactInternetSales
+	ADD CONSTRAINT FK_FactInternetSales_DimPromotion FOREIGN KEY (PromotionKey) REFERENCES dbo.DimPromotion(PromotionKey)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE dbo.FactInternetSales
+	ADD CONSTRAINT FK_FactInternetSales_DimSalesTerritory FOREIGN KEY (SalesTerritoryKey) REFERENCES dbo.DimSalesTerritory(SalesTerritoryKey)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE dbo.FactInternetSales
+	ADD CONSTRAINT FK_FactInternetSales_DimDate1 FOREIGN KEY (DateKey) REFERENCES dbo.DimDate(DateKey)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE dbo.FactInternetSales
+	ADD CONSTRAINT FK_FactInternetSales_DimProduct FOREIGN KEY (ProductKey) REFERENCES dbo.DimProduct(ProductKey)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE dbo.FactInternetSales
+	ADD CONSTRAINT FK_FactInternetSales_DimDate2 FOREIGN KEY (DateKey) REFERENCES dbo.DimDate(DateKey)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE dbo.FactInternetSales
+	ADD CONSTRAINT FK_FactInternetSales_DimCurrency FOREIGN KEY (CurrencyKey) REFERENCES dbo.DimCurrency(CurrencyKey)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+
+ALTER TABLE dbo.FactInternetSalesReason
+	ADD CONSTRAINT FK_FactInternetSalesReason_FactInternetSales FOREIGN KEY (SalesOrderNumber,SalesOrderLineNumber) REFERENCES dbo.FactInternetSales(SalesOrderNumber,SalesOrderLineNumber)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE dbo.FactInternetSalesReason
+	ADD CONSTRAINT FK_FactInternetSalesReason_DimSalesReason FOREIGN KEY (SalesReasonKey) REFERENCES dbo.DimSalesReason(SalesReasonKey)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+CREATE FUNCTION dbo.udfTwoDigitZeroFill (@number int )  
+  RETURNS char(2) 
+ WITH 
+ CALLED ON NULL INPUT,
+ EXECUTE AS CALLER  
+AS
+BEGIN
+DECLARE @result char(2);
+IF @number > 9 
+SET @result = convert(char(2), @number);
+ELSE
+SET @result = convert(char(2), '0' + convert(varchar, @number));
+RETURN @result;
+END
+go
+
+CREATE FUNCTION dbo.udfMinimumDate (@x DATETIME , @Parameter_172 DATETIME  )  
+  RETURNS DATETIME 
+ WITH 
+ CALLED ON NULL INPUT,
+ EXECUTE AS CALLER  
+AS
+BEGIN
+DECLARE @z DATETIME
+IF @x <= @y 
+SET @z = @x 
+ELSE 
+SET @z = @y
+RETURN(@z)
+END
+go
+
+CREATE FUNCTION dbo.udfBuildISO8601Date (@year int , @Parameter_175 int , @Parameter_176 int )  
+  RETURNS datetime 
+ WITH 
+ CALLED ON NULL INPUT,
+ EXECUTE AS CALLER  
+AS 
+BEGIN
+RETURN cast(convert(varchar, @year) + '-' + [dbo].[udfTwoDigitZeroFill](@month) 
++ '-' + [dbo].[udfTwoDigitZeroFill](@day) + 'T00:00:00' 
+as datetime);
+END
+go
+
+
+CREATE TRIGGER dbo.tD_DimCurrency ON dbo.DimCurrency FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on DimCurrency */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* dbo.DimCurrency  dbo.DimOrganization on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="0004d031", PARENT_OWNER="dbo", PARENT_TABLE="DimCurrency"
+    CHILD_OWNER="dbo", CHILD_TABLE="DimOrganization"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_DimOrganization_DimCurrency", FK_COLUMNS="CurrencyKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.DimOrganization
+      WHERE
+        /*  %JoinFKPK(dbo.DimOrganization,deleted," = "," AND") */
+        dbo.DimOrganization.CurrencyKey = deleted.CurrencyKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimCurrency because dbo.DimOrganization exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimCurrency  dbo.FactInternetSales on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimCurrency"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimCurrency", FK_COLUMNS="CurrencyKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactInternetSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactInternetSales,deleted," = "," AND") */
+        dbo.FactInternetSales.CurrencyKey = deleted.CurrencyKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimCurrency because dbo.FactInternetSales exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimCurrency  dbo.FactCurrencyRate on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimCurrency"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactCurrencyRate"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactCurrencyRate_DimCurrency", FK_COLUMNS="CurrencyKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactCurrencyRate
+      WHERE
+        /*  %JoinFKPK(dbo.FactCurrencyRate,deleted," = "," AND") */
+        dbo.FactCurrencyRate.CurrencyKey = deleted.CurrencyKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimCurrency because dbo.FactCurrencyRate exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimCurrency  dbo.FactResellerSales on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimCurrency"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactResellerSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactResellerSales_DimCurrency", FK_COLUMNS="CurrencyKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactResellerSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactResellerSales,deleted," = "," AND") */
+        dbo.FactResellerSales.CurrencyKey = deleted.CurrencyKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimCurrency because dbo.FactResellerSales exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER dbo.tU_DimCurrency ON dbo.DimCurrency FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on DimCurrency */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insCurrencyKey Int,
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* dbo.DimCurrency  dbo.DimOrganization on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="000528eb", PARENT_OWNER="dbo", PARENT_TABLE="DimCurrency"
+    CHILD_OWNER="dbo", CHILD_TABLE="DimOrganization"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_DimOrganization_DimCurrency", FK_COLUMNS="CurrencyKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(CurrencyKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.DimOrganization
+      WHERE
+        /*  %JoinFKPK(dbo.DimOrganization,deleted," = "," AND") */
+        dbo.DimOrganization.CurrencyKey = deleted.CurrencyKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimCurrency because dbo.DimOrganization exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimCurrency  dbo.FactInternetSales on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimCurrency"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimCurrency", FK_COLUMNS="CurrencyKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(CurrencyKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactInternetSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactInternetSales,deleted," = "," AND") */
+        dbo.FactInternetSales.CurrencyKey = deleted.CurrencyKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimCurrency because dbo.FactInternetSales exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimCurrency  dbo.FactCurrencyRate on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimCurrency"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactCurrencyRate"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactCurrencyRate_DimCurrency", FK_COLUMNS="CurrencyKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(CurrencyKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactCurrencyRate
+      WHERE
+        /*  %JoinFKPK(dbo.FactCurrencyRate,deleted," = "," AND") */
+        dbo.FactCurrencyRate.CurrencyKey = deleted.CurrencyKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimCurrency because dbo.FactCurrencyRate exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimCurrency  dbo.FactResellerSales on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimCurrency"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactResellerSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactResellerSales_DimCurrency", FK_COLUMNS="CurrencyKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(CurrencyKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactResellerSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactResellerSales,deleted," = "," AND") */
+        dbo.FactResellerSales.CurrencyKey = deleted.CurrencyKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimCurrency because dbo.FactResellerSales exists.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER dbo.tD_DimCustomer ON dbo.DimCustomer FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on DimCustomer */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* dbo.DimCustomer  dbo.FactSurveyResponse on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="0003e1ec", PARENT_OWNER="dbo", PARENT_TABLE="DimCustomer"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactSurveyResponse"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactSurveyResponse_CustomerKey", FK_COLUMNS="CustomerKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactSurveyResponse
+      WHERE
+        /*  %JoinFKPK(dbo.FactSurveyResponse,deleted," = "," AND") */
+        dbo.FactSurveyResponse.CustomerKey = deleted.CustomerKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimCustomer because dbo.FactSurveyResponse exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimCustomer  dbo.FactInternetSales on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimCustomer"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimCustomer", FK_COLUMNS="CustomerKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactInternetSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactInternetSales,deleted," = "," AND") */
+        dbo.FactInternetSales.CustomerKey = deleted.CustomerKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimCustomer because dbo.FactInternetSales exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimGeography  dbo.DimCustomer on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimGeography"
+    CHILD_OWNER="dbo", CHILD_TABLE="DimCustomer"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_DimCustomer_DimGeography", FK_COLUMNS="GeographyKey" */
+    IF EXISTS (SELECT * FROM deleted,dbo.DimGeography
+      WHERE
+        /* %JoinFKPK(deleted,dbo.DimGeography," = "," AND") */
+        deleted.GeographyKey = dbo.DimGeography.GeographyKey AND
+        NOT EXISTS (
+          SELECT * FROM dbo.DimCustomer
+          WHERE
+            /* %JoinFKPK(dbo.DimCustomer,dbo.DimGeography," = "," AND") */
+            dbo.DimCustomer.GeographyKey = dbo.DimGeography.GeographyKey
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last dbo.DimCustomer because dbo.DimGeography exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER dbo.tU_DimCustomer ON dbo.DimCustomer FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on DimCustomer */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insCustomerKey Int,
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* dbo.DimCustomer  dbo.FactSurveyResponse on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00044ea1", PARENT_OWNER="dbo", PARENT_TABLE="DimCustomer"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactSurveyResponse"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactSurveyResponse_CustomerKey", FK_COLUMNS="CustomerKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(CustomerKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactSurveyResponse
+      WHERE
+        /*  %JoinFKPK(dbo.FactSurveyResponse,deleted," = "," AND") */
+        dbo.FactSurveyResponse.CustomerKey = deleted.CustomerKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimCustomer because dbo.FactSurveyResponse exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimCustomer  dbo.FactInternetSales on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimCustomer"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimCustomer", FK_COLUMNS="CustomerKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(CustomerKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactInternetSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactInternetSales,deleted," = "," AND") */
+        dbo.FactInternetSales.CustomerKey = deleted.CustomerKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimCustomer because dbo.FactInternetSales exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimGeography  dbo.DimCustomer on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimGeography"
+    CHILD_OWNER="dbo", CHILD_TABLE="DimCustomer"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_DimCustomer_DimGeography", FK_COLUMNS="GeographyKey" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(GeographyKey)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,dbo.DimGeography
+        WHERE
+          /* %JoinFKPK(inserted,dbo.DimGeography) */
+          inserted.GeographyKey = dbo.DimGeography.GeographyKey
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    select @nullcnt = count(*) from inserted where
+      inserted.GeographyKey IS NULL
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update dbo.DimCustomer because dbo.DimGeography does not exist.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER dbo.tD_DimDate ON dbo.DimDate FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on DimDate */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* dbo.DimDate  dbo.FactInternetSales on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="000c2938", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimDate2", FK_COLUMNS="DateKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactInternetSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactInternetSales,deleted," = "," AND") */
+        dbo.FactInternetSales.DateKey = deleted.DateKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimDate because dbo.FactInternetSales exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimDate  dbo.FactCallCenter on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactCallCenter"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactCallCenter_DimDate", FK_COLUMNS="DateKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactCallCenter
+      WHERE
+        /*  %JoinFKPK(dbo.FactCallCenter,deleted," = "," AND") */
+        dbo.FactCallCenter.DateKey = deleted.DateKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimDate because dbo.FactCallCenter exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimDate  dbo.FactCurrencyRate on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactCurrencyRate"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactCurrencyRate_DimDate", FK_COLUMNS="DateKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactCurrencyRate
+      WHERE
+        /*  %JoinFKPK(dbo.FactCurrencyRate,deleted," = "," AND") */
+        dbo.FactCurrencyRate.DateKey = deleted.DateKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimDate because dbo.FactCurrencyRate exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimDate  dbo.FactInternetSales on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimDate1", FK_COLUMNS="DateKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactInternetSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactInternetSales,deleted," = "," AND") */
+        dbo.FactInternetSales.DateKey = deleted.DateKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimDate because dbo.FactInternetSales exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimDate  dbo.FactSalesQuota on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactSalesQuota"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactSalesQuota_DimDate", FK_COLUMNS="DateKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactSalesQuota
+      WHERE
+        /*  %JoinFKPK(dbo.FactSalesQuota,deleted," = "," AND") */
+        dbo.FactSalesQuota.DateKey = deleted.DateKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimDate because dbo.FactSalesQuota exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimDate  dbo.FactSurveyResponse on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactSurveyResponse"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactSurveyResponse_DateKey", FK_COLUMNS="DateKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactSurveyResponse
+      WHERE
+        /*  %JoinFKPK(dbo.FactSurveyResponse,deleted," = "," AND") */
+        dbo.FactSurveyResponse.DateKey = deleted.DateKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimDate because dbo.FactSurveyResponse exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimDate  dbo.FactResellerSales on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactResellerSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactResellerSales_DimDate1", FK_COLUMNS="DateKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactResellerSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactResellerSales,deleted," = "," AND") */
+        dbo.FactResellerSales.DateKey = deleted.DateKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimDate because dbo.FactResellerSales exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimDate  dbo.FactResellerSales on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactResellerSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactResellerSales_DimDate2", FK_COLUMNS="DateKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactResellerSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactResellerSales,deleted," = "," AND") */
+        dbo.FactResellerSales.DateKey = deleted.DateKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimDate because dbo.FactResellerSales exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimDate  dbo.FactFinance on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactFinance"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactFinance_DimDate", FK_COLUMNS="DateKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactFinance
+      WHERE
+        /*  %JoinFKPK(dbo.FactFinance,deleted," = "," AND") */
+        dbo.FactFinance.DateKey = deleted.DateKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimDate because dbo.FactFinance exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimDate  dbo.FactResellerSales on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactResellerSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactResellerSales_DimDate", FK_COLUMNS="DateKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactResellerSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactResellerSales,deleted," = "," AND") */
+        dbo.FactResellerSales.DateKey = deleted.DateKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimDate because dbo.FactResellerSales exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimDate  dbo.FactInternetSales on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimDate", FK_COLUMNS="DateKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactInternetSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactInternetSales,deleted," = "," AND") */
+        dbo.FactInternetSales.DateKey = deleted.DateKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimDate because dbo.FactInternetSales exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER dbo.tU_DimDate ON dbo.DimDate FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on DimDate */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insDateKey Int,
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* dbo.DimDate  dbo.FactInternetSales on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="000d1b31", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimDate2", FK_COLUMNS="DateKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(DateKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactInternetSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactInternetSales,deleted," = "," AND") */
+        dbo.FactInternetSales.DateKey = deleted.DateKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimDate because dbo.FactInternetSales exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimDate  dbo.FactCallCenter on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactCallCenter"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactCallCenter_DimDate", FK_COLUMNS="DateKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(DateKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactCallCenter
+      WHERE
+        /*  %JoinFKPK(dbo.FactCallCenter,deleted," = "," AND") */
+        dbo.FactCallCenter.DateKey = deleted.DateKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimDate because dbo.FactCallCenter exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimDate  dbo.FactCurrencyRate on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactCurrencyRate"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactCurrencyRate_DimDate", FK_COLUMNS="DateKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(DateKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactCurrencyRate
+      WHERE
+        /*  %JoinFKPK(dbo.FactCurrencyRate,deleted," = "," AND") */
+        dbo.FactCurrencyRate.DateKey = deleted.DateKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimDate because dbo.FactCurrencyRate exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimDate  dbo.FactInternetSales on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimDate1", FK_COLUMNS="DateKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(DateKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactInternetSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactInternetSales,deleted," = "," AND") */
+        dbo.FactInternetSales.DateKey = deleted.DateKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimDate because dbo.FactInternetSales exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimDate  dbo.FactSalesQuota on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactSalesQuota"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactSalesQuota_DimDate", FK_COLUMNS="DateKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(DateKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactSalesQuota
+      WHERE
+        /*  %JoinFKPK(dbo.FactSalesQuota,deleted," = "," AND") */
+        dbo.FactSalesQuota.DateKey = deleted.DateKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimDate because dbo.FactSalesQuota exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimDate  dbo.FactSurveyResponse on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactSurveyResponse"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactSurveyResponse_DateKey", FK_COLUMNS="DateKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(DateKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactSurveyResponse
+      WHERE
+        /*  %JoinFKPK(dbo.FactSurveyResponse,deleted," = "," AND") */
+        dbo.FactSurveyResponse.DateKey = deleted.DateKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimDate because dbo.FactSurveyResponse exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimDate  dbo.FactResellerSales on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactResellerSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactResellerSales_DimDate1", FK_COLUMNS="DateKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(DateKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactResellerSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactResellerSales,deleted," = "," AND") */
+        dbo.FactResellerSales.DateKey = deleted.DateKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimDate because dbo.FactResellerSales exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimDate  dbo.FactResellerSales on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactResellerSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactResellerSales_DimDate2", FK_COLUMNS="DateKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(DateKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactResellerSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactResellerSales,deleted," = "," AND") */
+        dbo.FactResellerSales.DateKey = deleted.DateKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimDate because dbo.FactResellerSales exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimDate  dbo.FactFinance on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactFinance"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactFinance_DimDate", FK_COLUMNS="DateKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(DateKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactFinance
+      WHERE
+        /*  %JoinFKPK(dbo.FactFinance,deleted," = "," AND") */
+        dbo.FactFinance.DateKey = deleted.DateKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimDate because dbo.FactFinance exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimDate  dbo.FactResellerSales on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactResellerSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactResellerSales_DimDate", FK_COLUMNS="DateKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(DateKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactResellerSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactResellerSales,deleted," = "," AND") */
+        dbo.FactResellerSales.DateKey = deleted.DateKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimDate because dbo.FactResellerSales exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimDate  dbo.FactInternetSales on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimDate", FK_COLUMNS="DateKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(DateKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactInternetSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactInternetSales,deleted," = "," AND") */
+        dbo.FactInternetSales.DateKey = deleted.DateKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimDate because dbo.FactInternetSales exists.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER dbo.tD_DimProduct ON dbo.DimProduct FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on DimProduct */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* dbo.DimProduct  dbo.FactInternetSales on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00059b38", PARENT_OWNER="dbo", PARENT_TABLE="DimProduct"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimProduct", FK_COLUMNS="ProductKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactInternetSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactInternetSales,deleted," = "," AND") */
+        dbo.FactInternetSales.ProductKey = deleted.ProductKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimProduct because dbo.FactInternetSales exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimProduct  dbo.FactAdditionalInternationalProductDescription on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimProduct"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactAdditionalInternationalProductDescription"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactAdditionalInternationalProductDescription_DimProduct", FK_COLUMNS="ProductKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactAdditionalInternationalProductDescription
+      WHERE
+        /*  %JoinFKPK(dbo.FactAdditionalInternationalProductDescription,deleted," = "," AND") */
+        dbo.FactAdditionalInternationalProductDescription.ProductKey = deleted.ProductKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimProduct because dbo.FactAdditionalInternationalProductDescription exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimProduct  dbo.FactResellerSales on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimProduct"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactResellerSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactResellerSales_DimProduct", FK_COLUMNS="ProductKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactResellerSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactResellerSales,deleted," = "," AND") */
+        dbo.FactResellerSales.ProductKey = deleted.ProductKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimProduct because dbo.FactResellerSales exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimProductSubcategory  dbo.DimProduct on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimProductSubcategory"
+    CHILD_OWNER="dbo", CHILD_TABLE="DimProduct"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_DimProduct_DimProductSubcategory", FK_COLUMNS="ProductSubcategoryKey" */
+    IF EXISTS (SELECT * FROM deleted,dbo.DimProductSubcategory
+      WHERE
+        /* %JoinFKPK(deleted,dbo.DimProductSubcategory," = "," AND") */
+        deleted.ProductSubcategoryKey = dbo.DimProductSubcategory.ProductSubcategoryKey AND
+        NOT EXISTS (
+          SELECT * FROM dbo.DimProduct
+          WHERE
+            /* %JoinFKPK(dbo.DimProduct,dbo.DimProductSubcategory," = "," AND") */
+            dbo.DimProduct.ProductSubcategoryKey = dbo.DimProductSubcategory.ProductSubcategoryKey
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last dbo.DimProduct because dbo.DimProductSubcategory exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER dbo.tU_DimProduct ON dbo.DimProduct FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on DimProduct */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insProductKey Int,
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* dbo.DimProduct  dbo.FactInternetSales on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00061bc2", PARENT_OWNER="dbo", PARENT_TABLE="DimProduct"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimProduct", FK_COLUMNS="ProductKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(ProductKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactInternetSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactInternetSales,deleted," = "," AND") */
+        dbo.FactInternetSales.ProductKey = deleted.ProductKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimProduct because dbo.FactInternetSales exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimProduct  dbo.FactAdditionalInternationalProductDescription on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimProduct"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactAdditionalInternationalProductDescription"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactAdditionalInternationalProductDescription_DimProduct", FK_COLUMNS="ProductKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(ProductKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactAdditionalInternationalProductDescription
+      WHERE
+        /*  %JoinFKPK(dbo.FactAdditionalInternationalProductDescription,deleted," = "," AND") */
+        dbo.FactAdditionalInternationalProductDescription.ProductKey = deleted.ProductKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimProduct because dbo.FactAdditionalInternationalProductDescription exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimProduct  dbo.FactResellerSales on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimProduct"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactResellerSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactResellerSales_DimProduct", FK_COLUMNS="ProductKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(ProductKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactResellerSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactResellerSales,deleted," = "," AND") */
+        dbo.FactResellerSales.ProductKey = deleted.ProductKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimProduct because dbo.FactResellerSales exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimProductSubcategory  dbo.DimProduct on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimProductSubcategory"
+    CHILD_OWNER="dbo", CHILD_TABLE="DimProduct"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_DimProduct_DimProductSubcategory", FK_COLUMNS="ProductSubcategoryKey" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(ProductSubcategoryKey)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,dbo.DimProductSubcategory
+        WHERE
+          /* %JoinFKPK(inserted,dbo.DimProductSubcategory) */
+          inserted.ProductSubcategoryKey = dbo.DimProductSubcategory.ProductSubcategoryKey
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    select @nullcnt = count(*) from inserted where
+      inserted.ProductSubcategoryKey IS NULL
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update dbo.DimProduct because dbo.DimProductSubcategory does not exist.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER dbo.tD_DimPromotion ON dbo.DimPromotion FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on DimPromotion */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* dbo.DimPromotion  dbo.FactResellerSales on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00027d58", PARENT_OWNER="dbo", PARENT_TABLE="DimPromotion"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactResellerSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactResellerSales_DimPromotion", FK_COLUMNS="PromotionKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactResellerSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactResellerSales,deleted," = "," AND") */
+        dbo.FactResellerSales.PromotionKey = deleted.PromotionKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimPromotion because dbo.FactResellerSales exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimPromotion  dbo.FactInternetSales on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimPromotion"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimPromotion", FK_COLUMNS="PromotionKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactInternetSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactInternetSales,deleted," = "," AND") */
+        dbo.FactInternetSales.PromotionKey = deleted.PromotionKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimPromotion because dbo.FactInternetSales exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER dbo.tU_DimPromotion ON dbo.DimPromotion FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on DimPromotion */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insPromotionKey Int,
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* dbo.DimPromotion  dbo.FactResellerSales on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="0002adb5", PARENT_OWNER="dbo", PARENT_TABLE="DimPromotion"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactResellerSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactResellerSales_DimPromotion", FK_COLUMNS="PromotionKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(PromotionKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactResellerSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactResellerSales,deleted," = "," AND") */
+        dbo.FactResellerSales.PromotionKey = deleted.PromotionKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimPromotion because dbo.FactResellerSales exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimPromotion  dbo.FactInternetSales on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimPromotion"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimPromotion", FK_COLUMNS="PromotionKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(PromotionKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactInternetSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactInternetSales,deleted," = "," AND") */
+        dbo.FactInternetSales.PromotionKey = deleted.PromotionKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimPromotion because dbo.FactInternetSales exists.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER dbo.tD_DimSalesTerritory ON dbo.DimSalesTerritory FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on DimSalesTerritory */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* dbo.DimSalesTerritory  dbo.FactInternetSales on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="0004ebe3", PARENT_OWNER="dbo", PARENT_TABLE="DimSalesTerritory"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimSalesTerritory", FK_COLUMNS="SalesTerritoryKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactInternetSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactInternetSales,deleted," = "," AND") */
+        dbo.FactInternetSales.SalesTerritoryKey = deleted.SalesTerritoryKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimSalesTerritory because dbo.FactInternetSales exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimSalesTerritory  dbo.DimGeography on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimSalesTerritory"
+    CHILD_OWNER="dbo", CHILD_TABLE="DimGeography"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_DimGeography_DimSalesTerritory", FK_COLUMNS="SalesTerritoryKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.DimGeography
+      WHERE
+        /*  %JoinFKPK(dbo.DimGeography,deleted," = "," AND") */
+        dbo.DimGeography.SalesTerritoryKey = deleted.SalesTerritoryKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimSalesTerritory because dbo.DimGeography exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimSalesTerritory  dbo.DimEmployee on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimSalesTerritory"
+    CHILD_OWNER="dbo", CHILD_TABLE="DimEmployee"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_DimEmployee_DimSalesTerritory", FK_COLUMNS="SalesTerritoryKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.DimEmployee
+      WHERE
+        /*  %JoinFKPK(dbo.DimEmployee,deleted," = "," AND") */
+        dbo.DimEmployee.SalesTerritoryKey = deleted.SalesTerritoryKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimSalesTerritory because dbo.DimEmployee exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimSalesTerritory  dbo.FactResellerSales on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimSalesTerritory"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactResellerSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactResellerSales_DimSalesTerritory", FK_COLUMNS="SalesTerritoryKey" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactResellerSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactResellerSales,deleted," = "," AND") */
+        dbo.FactResellerSales.SalesTerritoryKey = deleted.SalesTerritoryKey
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.DimSalesTerritory because dbo.FactResellerSales exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER dbo.tU_DimSalesTerritory ON dbo.DimSalesTerritory FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on DimSalesTerritory */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insSalesTerritoryKey Int,
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* dbo.DimSalesTerritory  dbo.FactInternetSales on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="000554d0", PARENT_OWNER="dbo", PARENT_TABLE="DimSalesTerritory"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimSalesTerritory", FK_COLUMNS="SalesTerritoryKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(SalesTerritoryKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactInternetSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactInternetSales,deleted," = "," AND") */
+        dbo.FactInternetSales.SalesTerritoryKey = deleted.SalesTerritoryKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimSalesTerritory because dbo.FactInternetSales exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimSalesTerritory  dbo.DimGeography on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimSalesTerritory"
+    CHILD_OWNER="dbo", CHILD_TABLE="DimGeography"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_DimGeography_DimSalesTerritory", FK_COLUMNS="SalesTerritoryKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(SalesTerritoryKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.DimGeography
+      WHERE
+        /*  %JoinFKPK(dbo.DimGeography,deleted," = "," AND") */
+        dbo.DimGeography.SalesTerritoryKey = deleted.SalesTerritoryKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimSalesTerritory because dbo.DimGeography exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimSalesTerritory  dbo.DimEmployee on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimSalesTerritory"
+    CHILD_OWNER="dbo", CHILD_TABLE="DimEmployee"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_DimEmployee_DimSalesTerritory", FK_COLUMNS="SalesTerritoryKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(SalesTerritoryKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.DimEmployee
+      WHERE
+        /*  %JoinFKPK(dbo.DimEmployee,deleted," = "," AND") */
+        dbo.DimEmployee.SalesTerritoryKey = deleted.SalesTerritoryKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimSalesTerritory because dbo.DimEmployee exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimSalesTerritory  dbo.FactResellerSales on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimSalesTerritory"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactResellerSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactResellerSales_DimSalesTerritory", FK_COLUMNS="SalesTerritoryKey" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(SalesTerritoryKey)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactResellerSales
+      WHERE
+        /*  %JoinFKPK(dbo.FactResellerSales,deleted," = "," AND") */
+        dbo.FactResellerSales.SalesTerritoryKey = deleted.SalesTerritoryKey
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.DimSalesTerritory because dbo.FactResellerSales exists.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER dbo.tD_FactInternetSales ON dbo.FactInternetSales FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on FactInternetSales */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* dbo.FactInternetSales  dbo.FactInternetSalesReason on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="000d31b0", PARENT_OWNER="dbo", PARENT_TABLE="FactInternetSales"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSalesReason"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSalesReason_FactInternetSales", FK_COLUMNS="SalesOrderNumber""SalesOrderLineNumber" */
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactInternetSalesReason
+      WHERE
+        /*  %JoinFKPK(dbo.FactInternetSalesReason,deleted," = "," AND") */
+        dbo.FactInternetSalesReason.SalesOrderNumber = deleted.SalesOrderNumber AND
+        dbo.FactInternetSalesReason.SalesOrderLineNumber = deleted.SalesOrderLineNumber
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete dbo.FactInternetSales because dbo.FactInternetSalesReason exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimCurrency  dbo.FactInternetSales on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimCurrency"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimCurrency", FK_COLUMNS="CurrencyKey" */
+    IF EXISTS (SELECT * FROM deleted,dbo.DimCurrency
+      WHERE
+        /* %JoinFKPK(deleted,dbo.DimCurrency," = "," AND") */
+        deleted.CurrencyKey = dbo.DimCurrency.CurrencyKey AND
+        NOT EXISTS (
+          SELECT * FROM dbo.FactInternetSales
+          WHERE
+            /* %JoinFKPK(dbo.FactInternetSales,dbo.DimCurrency," = "," AND") */
+            dbo.FactInternetSales.CurrencyKey = dbo.DimCurrency.CurrencyKey
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last dbo.FactInternetSales because dbo.DimCurrency exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimDate  dbo.FactInternetSales on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimDate2", FK_COLUMNS="DateKey" */
+    IF EXISTS (SELECT * FROM deleted,dbo.DimDate
+      WHERE
+        /* %JoinFKPK(deleted,dbo.DimDate," = "," AND") */
+        deleted.DateKey = dbo.DimDate.DateKey AND
+        NOT EXISTS (
+          SELECT * FROM dbo.FactInternetSales
+          WHERE
+            /* %JoinFKPK(dbo.FactInternetSales,dbo.DimDate," = "," AND") */
+            dbo.FactInternetSales.DateKey = dbo.DimDate.DateKey
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last dbo.FactInternetSales because dbo.DimDate exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimProduct  dbo.FactInternetSales on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimProduct"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimProduct", FK_COLUMNS="ProductKey" */
+    IF EXISTS (SELECT * FROM deleted,dbo.DimProduct
+      WHERE
+        /* %JoinFKPK(deleted,dbo.DimProduct," = "," AND") */
+        deleted.ProductKey = dbo.DimProduct.ProductKey AND
+        NOT EXISTS (
+          SELECT * FROM dbo.FactInternetSales
+          WHERE
+            /* %JoinFKPK(dbo.FactInternetSales,dbo.DimProduct," = "," AND") */
+            dbo.FactInternetSales.ProductKey = dbo.DimProduct.ProductKey
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last dbo.FactInternetSales because dbo.DimProduct exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimDate  dbo.FactInternetSales on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimDate1", FK_COLUMNS="DateKey" */
+    IF EXISTS (SELECT * FROM deleted,dbo.DimDate
+      WHERE
+        /* %JoinFKPK(deleted,dbo.DimDate," = "," AND") */
+        deleted.DateKey = dbo.DimDate.DateKey AND
+        NOT EXISTS (
+          SELECT * FROM dbo.FactInternetSales
+          WHERE
+            /* %JoinFKPK(dbo.FactInternetSales,dbo.DimDate," = "," AND") */
+            dbo.FactInternetSales.DateKey = dbo.DimDate.DateKey
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last dbo.FactInternetSales because dbo.DimDate exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimSalesTerritory  dbo.FactInternetSales on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimSalesTerritory"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimSalesTerritory", FK_COLUMNS="SalesTerritoryKey" */
+    IF EXISTS (SELECT * FROM deleted,dbo.DimSalesTerritory
+      WHERE
+        /* %JoinFKPK(deleted,dbo.DimSalesTerritory," = "," AND") */
+        deleted.SalesTerritoryKey = dbo.DimSalesTerritory.SalesTerritoryKey AND
+        NOT EXISTS (
+          SELECT * FROM dbo.FactInternetSales
+          WHERE
+            /* %JoinFKPK(dbo.FactInternetSales,dbo.DimSalesTerritory," = "," AND") */
+            dbo.FactInternetSales.SalesTerritoryKey = dbo.DimSalesTerritory.SalesTerritoryKey
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last dbo.FactInternetSales because dbo.DimSalesTerritory exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimPromotion  dbo.FactInternetSales on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimPromotion"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimPromotion", FK_COLUMNS="PromotionKey" */
+    IF EXISTS (SELECT * FROM deleted,dbo.DimPromotion
+      WHERE
+        /* %JoinFKPK(deleted,dbo.DimPromotion," = "," AND") */
+        deleted.PromotionKey = dbo.DimPromotion.PromotionKey AND
+        NOT EXISTS (
+          SELECT * FROM dbo.FactInternetSales
+          WHERE
+            /* %JoinFKPK(dbo.FactInternetSales,dbo.DimPromotion," = "," AND") */
+            dbo.FactInternetSales.PromotionKey = dbo.DimPromotion.PromotionKey
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last dbo.FactInternetSales because dbo.DimPromotion exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimDate  dbo.FactInternetSales on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimDate", FK_COLUMNS="DateKey" */
+    IF EXISTS (SELECT * FROM deleted,dbo.DimDate
+      WHERE
+        /* %JoinFKPK(deleted,dbo.DimDate," = "," AND") */
+        deleted.DateKey = dbo.DimDate.DateKey AND
+        NOT EXISTS (
+          SELECT * FROM dbo.FactInternetSales
+          WHERE
+            /* %JoinFKPK(dbo.FactInternetSales,dbo.DimDate," = "," AND") */
+            dbo.FactInternetSales.DateKey = dbo.DimDate.DateKey
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last dbo.FactInternetSales because dbo.DimDate exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.DimCustomer  dbo.FactInternetSales on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimCustomer"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimCustomer", FK_COLUMNS="CustomerKey" */
+    IF EXISTS (SELECT * FROM deleted,dbo.DimCustomer
+      WHERE
+        /* %JoinFKPK(deleted,dbo.DimCustomer," = "," AND") */
+        deleted.CustomerKey = dbo.DimCustomer.CustomerKey AND
+        NOT EXISTS (
+          SELECT * FROM dbo.FactInternetSales
+          WHERE
+            /* %JoinFKPK(dbo.FactInternetSales,dbo.DimCustomer," = "," AND") */
+            dbo.FactInternetSales.CustomerKey = dbo.DimCustomer.CustomerKey
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last dbo.FactInternetSales because dbo.DimCustomer exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER dbo.tU_FactInternetSales ON dbo.FactInternetSales FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on FactInternetSales */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insSalesOrderNumber Nvarchar(20), 
+           @insSalesOrderLineNumber Tinyint,
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* dbo.FactInternetSales  dbo.FactInternetSalesReason on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="000e9576", PARENT_OWNER="dbo", PARENT_TABLE="FactInternetSales"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSalesReason"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSalesReason_FactInternetSales", FK_COLUMNS="SalesOrderNumber""SalesOrderLineNumber" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(SalesOrderNumber) OR
+    UPDATE(SalesOrderLineNumber)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,dbo.FactInternetSalesReason
+      WHERE
+        /*  %JoinFKPK(dbo.FactInternetSalesReason,deleted," = "," AND") */
+        dbo.FactInternetSalesReason.SalesOrderNumber = deleted.SalesOrderNumber AND
+        dbo.FactInternetSalesReason.SalesOrderLineNumber = deleted.SalesOrderLineNumber
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update dbo.FactInternetSales because dbo.FactInternetSalesReason exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimCurrency  dbo.FactInternetSales on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimCurrency"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimCurrency", FK_COLUMNS="CurrencyKey" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(CurrencyKey)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,dbo.DimCurrency
+        WHERE
+          /* %JoinFKPK(inserted,dbo.DimCurrency) */
+          inserted.CurrencyKey = dbo.DimCurrency.CurrencyKey
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    select @nullcnt = count(*) from inserted where
+      inserted.CurrencyKey IS NULL
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update dbo.FactInternetSales because dbo.DimCurrency does not exist.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimDate  dbo.FactInternetSales on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimDate2", FK_COLUMNS="DateKey" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(DateKey)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,dbo.DimDate
+        WHERE
+          /* %JoinFKPK(inserted,dbo.DimDate) */
+          inserted.DateKey = dbo.DimDate.DateKey
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    select @nullcnt = count(*) from inserted where
+      inserted.DateKey IS NULL
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update dbo.FactInternetSales because dbo.DimDate does not exist.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimProduct  dbo.FactInternetSales on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimProduct"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimProduct", FK_COLUMNS="ProductKey" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(ProductKey)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,dbo.DimProduct
+        WHERE
+          /* %JoinFKPK(inserted,dbo.DimProduct) */
+          inserted.ProductKey = dbo.DimProduct.ProductKey
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    select @nullcnt = count(*) from inserted where
+      inserted.ProductKey IS NULL
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update dbo.FactInternetSales because dbo.DimProduct does not exist.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimDate  dbo.FactInternetSales on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimDate1", FK_COLUMNS="DateKey" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(DateKey)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,dbo.DimDate
+        WHERE
+          /* %JoinFKPK(inserted,dbo.DimDate) */
+          inserted.DateKey = dbo.DimDate.DateKey
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    select @nullcnt = count(*) from inserted where
+      inserted.DateKey IS NULL
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update dbo.FactInternetSales because dbo.DimDate does not exist.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimSalesTerritory  dbo.FactInternetSales on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimSalesTerritory"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimSalesTerritory", FK_COLUMNS="SalesTerritoryKey" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(SalesTerritoryKey)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,dbo.DimSalesTerritory
+        WHERE
+          /* %JoinFKPK(inserted,dbo.DimSalesTerritory) */
+          inserted.SalesTerritoryKey = dbo.DimSalesTerritory.SalesTerritoryKey
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    select @nullcnt = count(*) from inserted where
+      inserted.SalesTerritoryKey IS NULL
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update dbo.FactInternetSales because dbo.DimSalesTerritory does not exist.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimPromotion  dbo.FactInternetSales on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimPromotion"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimPromotion", FK_COLUMNS="PromotionKey" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(PromotionKey)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,dbo.DimPromotion
+        WHERE
+          /* %JoinFKPK(inserted,dbo.DimPromotion) */
+          inserted.PromotionKey = dbo.DimPromotion.PromotionKey
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    select @nullcnt = count(*) from inserted where
+      inserted.PromotionKey IS NULL
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update dbo.FactInternetSales because dbo.DimPromotion does not exist.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimDate  dbo.FactInternetSales on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimDate"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimDate", FK_COLUMNS="DateKey" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(DateKey)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,dbo.DimDate
+        WHERE
+          /* %JoinFKPK(inserted,dbo.DimDate) */
+          inserted.DateKey = dbo.DimDate.DateKey
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    select @nullcnt = count(*) from inserted where
+      inserted.DateKey IS NULL
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update dbo.FactInternetSales because dbo.DimDate does not exist.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.DimCustomer  dbo.FactInternetSales on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="DimCustomer"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSales"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSales_DimCustomer", FK_COLUMNS="CustomerKey" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(CustomerKey)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,dbo.DimCustomer
+        WHERE
+          /* %JoinFKPK(inserted,dbo.DimCustomer) */
+          inserted.CustomerKey = dbo.DimCustomer.CustomerKey
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    select @nullcnt = count(*) from inserted where
+      inserted.CustomerKey IS NULL
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update dbo.FactInternetSales because dbo.DimCustomer does not exist.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER dbo.tD_FactInternetSalesReason ON dbo.FactInternetSalesReason FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on FactInternetSalesReason */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* dbo.DimSalesReason  dbo.FactInternetSalesReason on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="0003d002", PARENT_OWNER="dbo", PARENT_TABLE="DimSalesReason"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSalesReason"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSalesReason_DimSalesReason", FK_COLUMNS="SalesReasonKey" */
+    IF EXISTS (SELECT * FROM deleted,dbo.DimSalesReason
+      WHERE
+        /* %JoinFKPK(deleted,dbo.DimSalesReason," = "," AND") */
+        deleted.SalesReasonKey = dbo.DimSalesReason.SalesReasonKey AND
+        NOT EXISTS (
+          SELECT * FROM dbo.FactInternetSalesReason
+          WHERE
+            /* %JoinFKPK(dbo.FactInternetSalesReason,dbo.DimSalesReason," = "," AND") */
+            dbo.FactInternetSalesReason.SalesReasonKey = dbo.DimSalesReason.SalesReasonKey
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last dbo.FactInternetSalesReason because dbo.DimSalesReason exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* dbo.FactInternetSales  dbo.FactInternetSalesReason on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="FactInternetSales"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSalesReason"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSalesReason_FactInternetSales", FK_COLUMNS="SalesOrderNumber""SalesOrderLineNumber" */
+    IF EXISTS (SELECT * FROM deleted,dbo.FactInternetSales
+      WHERE
+        /* %JoinFKPK(deleted,dbo.FactInternetSales," = "," AND") */
+        deleted.SalesOrderNumber = dbo.FactInternetSales.SalesOrderNumber AND
+        deleted.SalesOrderLineNumber = dbo.FactInternetSales.SalesOrderLineNumber AND
+        NOT EXISTS (
+          SELECT * FROM dbo.FactInternetSalesReason
+          WHERE
+            /* %JoinFKPK(dbo.FactInternetSalesReason,dbo.FactInternetSales," = "," AND") */
+            dbo.FactInternetSalesReason.SalesOrderNumber = dbo.FactInternetSales.SalesOrderNumber AND
+            dbo.FactInternetSalesReason.SalesOrderLineNumber = dbo.FactInternetSales.SalesOrderLineNumber
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last dbo.FactInternetSalesReason because dbo.FactInternetSales exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER dbo.tU_FactInternetSalesReason ON dbo.FactInternetSalesReason FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on FactInternetSalesReason */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insSalesOrderNumber Nvarchar(20), 
+           @insSalesOrderLineNumber Tinyint, 
+           @insSalesReasonKey Int,
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* dbo.DimSalesReason  dbo.FactInternetSalesReason on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="0003957c", PARENT_OWNER="dbo", PARENT_TABLE="DimSalesReason"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSalesReason"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSalesReason_DimSalesReason", FK_COLUMNS="SalesReasonKey" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(SalesReasonKey)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,dbo.DimSalesReason
+        WHERE
+          /* %JoinFKPK(inserted,dbo.DimSalesReason) */
+          inserted.SalesReasonKey = dbo.DimSalesReason.SalesReasonKey
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update dbo.FactInternetSalesReason because dbo.DimSalesReason does not exist.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* dbo.FactInternetSales  dbo.FactInternetSalesReason on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="dbo", PARENT_TABLE="FactInternetSales"
+    CHILD_OWNER="dbo", CHILD_TABLE="FactInternetSalesReason"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="FK_FactInternetSalesReason_FactInternetSales", FK_COLUMNS="SalesOrderNumber""SalesOrderLineNumber" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(SalesOrderNumber) OR
+    UPDATE(SalesOrderLineNumber)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,dbo.FactInternetSales
+        WHERE
+          /* %JoinFKPK(inserted,dbo.FactInternetSales) */
+          inserted.SalesOrderNumber = dbo.FactInternetSales.SalesOrderNumber and
+          inserted.SalesOrderLineNumber = dbo.FactInternetSales.SalesOrderLineNumber
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update dbo.FactInternetSalesReason because dbo.FactInternetSales does not exist.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
