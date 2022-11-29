@@ -4184,3 +4184,8 @@ go
 
 
 
+
+
+ALTER TABLE [dbo].[Publshr]
+ADD [HARTFORD]  char(18)  NULL
+go
