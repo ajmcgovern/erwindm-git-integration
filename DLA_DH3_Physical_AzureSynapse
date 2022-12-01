@@ -1,0 +1,82 @@
+
+CREATE TABLE [COMPANY]
+(
+	[Global_Party_ID] char(18) NOT NULL ,
+	[Company_Registration_Number] char(18) NULL 
+);
+
+CREATE TABLE [EMPLOYMENT]
+(
+	[Start_Date] char(18) NOT NULL ,
+	[Person_Party_ID] char(18) NOT NULL ,
+	[Organization_Party_ID] char(18) NOT NULL ,
+	[Employment_Starting_Salary] char(18) NULL ,
+	[Employment_Job_Title] char(18) NULL ,
+	[Employment_Street_Address] char(18) NULL ,
+	[Employment_City_Name] char(18) NULL ,
+	[Employment_State_Prov_Name] char(18) NULL ,
+	[Employment_Postal_Code] char(18) NULL ,
+	[Employment_Phone_Number] char(18) NULL 
+);
+
+CREATE TABLE [GOVERNMENT]
+(
+	[Global_Party_ID] char(18) NOT NULL 
+);
+
+CREATE TABLE [INTERNAL_ORGANIZATION]
+(
+	[Global_Party_ID] char(18) NOT NULL 
+);
+
+CREATE TABLE [ORGANIZATION]
+(
+	[Global_Party_ID] char(18) NOT NULL ,
+	[Organization_Name] char(18) NULL ,
+	[Organization_Tax_Id] char(18) NULL ,
+	[Organization_Industry_Sector_Code] char(18) NULL 
+);
+
+CREATE TABLE [PARTY]
+(
+	[Global_Party_ID] char(18) NOT NULL ,
+	[Party_Street_Address] char(18) NULL ,
+	[Party_City_Name] char(18) NULL ,
+	[Party_State_Prov_Name] char(18) NULL ,
+	[Party_Postal_Code] char(18) NULL ,
+	[Party_Phone_Number] char(18) NULL ,
+	[Party_Type_Code] char(18) NULL 
+);
+
+CREATE TABLE [PERSON]
+(
+	[Global_Party_ID] char(18) NOT NULL ,
+	[Person_First_Name] char(18) NULL ,
+	[Person_Last_Name] char(18) NULL ,
+	[Person_Birth_Date] char(18) NULL ,
+	[Person_Gender_Code] char(18) NULL ,
+	[Person_Nationality_Code] char(18) NULL ,
+	[Person_Emergency_Contact_Name] char(18) NULL ,
+	[Person_Emergency_Contact_Phone_Number] char(18) NULL 
+);
+
+ALTER TABLE [COMPANY]
+	ADD CONSTRAINT [XPKCOMPANY] PRIMARY KEY NONCLUSTERED ([Global_Party_ID] ASC) NOT ENFORCED ;
+
+ALTER TABLE [EMPLOYMENT]
+	ADD CONSTRAINT [XPKEMPLOYMENT] PRIMARY KEY NONCLUSTERED ([Start_Date] ASC,[Person_Party_ID] ASC,[Organization_Party_ID] ASC) NOT ENFORCED ;
+
+ALTER TABLE [GOVERNMENT]
+	ADD CONSTRAINT [XPKGOVERNMENT] PRIMARY KEY NONCLUSTERED ([Global_Party_ID] ASC) NOT ENFORCED ;
+
+ALTER TABLE [INTERNAL_ORGANIZATION]
+	ADD CONSTRAINT [XPKINTERNAL_ORGANIZATION] PRIMARY KEY NONCLUSTERED ([Global_Party_ID] ASC) NOT ENFORCED ;
+
+ALTER TABLE [ORGANIZATION]
+	ADD CONSTRAINT [XPKORGANIZATION] PRIMARY KEY NONCLUSTERED ([Global_Party_ID] ASC) NOT ENFORCED ;
+
+ALTER TABLE [PARTY]
+	ADD CONSTRAINT [XPKPARTY] PRIMARY KEY NONCLUSTERED ([Global_Party_ID] ASC) NOT ENFORCED ;
+
+ALTER TABLE [PERSON]
+	ADD CONSTRAINT [XPKPERSON] PRIMARY KEY NONCLUSTERED ([Global_Party_ID] ASC) NOT ENFORCED ;
