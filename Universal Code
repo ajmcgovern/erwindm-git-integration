@@ -4191,3 +4191,31 @@ go
 
 
 
+
+
+DROP INDEX [aunmind] ON [dbo].[Auth]
+go
+
+ALTER TABLE [dbo].[Auth]
+  DROP COLUMN [Auth_Frst_Nam]
+go
+
+ALTER TABLE [dbo].[Auth]
+  DROP COLUMN [Auth_Phn_Nbr]
+go
+
+CREATE NONCLUSTERED INDEX [aunmind] ON [dbo].[Auth]
+( 
+	[Auth_Lst_Nam]        ASC
+)
+WITH
+(
+	PAD_INDEX = OFF,
+	IGNORE_DUP_KEY = OFF,
+	STATISTICS_NORECOMPUTE = OFF,
+	ALLOW_ROW_LOCKS = ON,
+	ALLOW_PAGE_LOCKS = ON,
+	DATA_COMPRESSION = NONE
+)
+ON "PRIMARY"
+go
