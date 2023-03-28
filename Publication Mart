@@ -1233,3 +1233,32 @@ END
 go
 
 
+
+
+ALTER TABLE [dbo].[sales facts]
+DROP CONSTRAINT [R_38]
+go
+
+ALTER TABLE [dbo].[sales facts]
+DROP CONSTRAINT [XPKsales facts]
+go
+
+ALTER TABLE [dbo].[Customer_dim]
+DROP CONSTRAINT [XPKCustomer_dim]
+go
+
+ALTER TABLE [dbo].[sales facts]
+  DROP COLUMN [customer_id]
+go
+
+ALTER TABLE [dbo].[Customer_dim]
+  DROP COLUMN [customer_dim_id]
+go
+
+ALTER TABLE [dbo].[Customer_dim]
+  DROP COLUMN [customer_name]
+go
+
+ALTER TABLE [dbo].[sales facts]
+ADD CONSTRAINT [XPKsales facts] PRIMARY KEY  CLUSTERED ([stor_id] ASC,[pub_id] ASC,[time_id] ASC,[book_id] ASC,[genre_id] ASC,[state_code] ASC,[region_id] ASC)
+go
