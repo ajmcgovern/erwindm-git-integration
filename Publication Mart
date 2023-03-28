@@ -1,0 +1,1235 @@
+
+CREATE TYPE [empid]
+	FROM CHAR(9) NOT NULL
+go
+
+CREATE TYPE [id]
+	FROM VARCHAR(11) NOT NULL
+go
+
+CREATE TYPE [tid]
+	FROM VARCHAR(6) NOT NULL
+go
+
+CREATE RULE [genre_valid_values]
+	AS @col IN ('children','mystery','science fiction', 'fiction', 'non-fiction', 'travel', 'cooking', 'biography', 'business')
+go
+
+CREATE RULE [quarter]
+	AS 1,2,3,4
+go
+
+CREATE TABLE [Book_Dim]
+)
+go
+
+CREATE TABLE [Customer_dim]
+)
+go
+
+CREATE TABLE [Genre_dim]
+)
+go
+
+CREATE TABLE [Pub_dim]
+)
+go
+
+CREATE TABLE [Region_dim]
+)
+go
+
+CREATE TABLE [sales facts]
+)
+go
+
+CREATE TABLE [stores_dim]
+)
+go
+
+CREATE TABLE [time_dim]
+)
+go
+
+ALTER TABLE [Book_Dim]
+	ADD PRIMARY KEY  CLUSTERED ([book_id] ASC,[pub_id] ASC)
+go
+
+ALTER TABLE [Customer_dim]
+	ADD PRIMARY KEY  CLUSTERED ([customer_dim_id] ASC)
+go
+
+ALTER TABLE [Genre_dim]
+	ADD PRIMARY KEY  CLUSTERED ([genre_id] ASC)
+go
+
+ALTER TABLE [Pub_dim]
+	ADD PRIMARY KEY  CLUSTERED ([pub_id] ASC)
+go
+
+ALTER TABLE [Region_dim]
+	ADD PRIMARY KEY  CLUSTERED ([region_id] ASC,[state_code] ASC)
+go
+
+ALTER TABLE [sales facts]
+	ADD PRIMARY KEY  CLUSTERED ([stor_id] ASC,[pub_id] ASC,[time_id] ASC,[book_id] ASC,[genre_id] ASC,[state_code] ASC,[region_id] ASC,[customer_id] ASC)
+go
+
+ALTER TABLE [stores_dim]
+	ADD PRIMARY KEY  CLUSTERED ([state_code] ASC,[region_id] ASC,[stor_id] ASC)
+go
+
+ALTER TABLE [time_dim]
+	ADD PRIMARY KEY  CLUSTERED ([time_id] ASC)
+go
+
+
+ALTER TABLE [Book_Dim]
+	ADD  FOREIGN KEY ([pub_id]) REFERENCES [Pub_dim]([pub_id])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+
+ALTER TABLE [sales facts]
+	ADD  FOREIGN KEY ([state_code],[region_id],[stor_id]) REFERENCES [stores_dim]([state_code],[region_id],[stor_id])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE [sales facts]
+	ADD  FOREIGN KEY ([time_id]) REFERENCES [time_dim]([time_id])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE [sales facts]
+	ADD  FOREIGN KEY ([book_id],[pub_id]) REFERENCES [Book_Dim]([book_id],[pub_id])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE [sales facts]
+	ADD  FOREIGN KEY ([genre_id]) REFERENCES [Genre_dim]([genre_id])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE [sales facts]
+	ADD  FOREIGN KEY ([customer_id]) REFERENCES [Customer_dim]([customer_dim_id])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+
+ALTER TABLE [stores_dim]
+	ADD  FOREIGN KEY ([region_id],[state_code]) REFERENCES [Region_dim]([region_id],[state_code])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+CREATE PROCEDURE [byroyalty] @percentage int   
+   
+ AS select au_id from titleauthor
+where titleauthor.royaltyper = @percentage
+go
+
+CREATE PROCEDURE [reptq1]   
+   
+ AS select pub_id, title_id, price, pubdate
+from titles
+where price is NOT NULL
+order by pub_id
+COMPUTE avg(price) BY pub_id
+COMPUTE avg(price)
+go
+
+CREATE PROCEDURE [reptq2]   
+   
+ AS select type, pub_id, titles.title_id, au_ord,
+   Name = substring (au_lname, 1,15), ytd_sales
+from titles, authors, titleauthor
+where titles.title_id = titleauthor.title_id AND authors.au_id = titleauthor.au_id
+   AND pub_id is NOT NULL
+order by pub_id, type
+COMPUTE avg(ytd_sales) BY pub_id, type
+COMPUTE avg(ytd_sales) BY pub_id
+go
+
+CREATE PROCEDURE [reptq3] @lolimit money , @hilimit money , @type char(12)   
+   
+ AS select pub_id, type, title_id, price
+from titles
+where price >@lolimit AND price <@hilimit AND type = @type OR type LIKE '%cook%'
+order by pub_id, type
+COMPUTE count(title_id) BY pub_id, type
+go
+
+
+CREATE TRIGGER tD_Book_Dim ON Book_Dim FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on Book_Dim */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* Book_Dim  sales facts on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00023b85", PARENT_OWNER="", PARENT_TABLE="Book_Dim"
+    CHILD_OWNER="", CHILD_TABLE="sales facts"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="", FK_COLUMNS="book_id""pub_id" */
+    IF EXISTS (
+      SELECT * FROM deleted,sales facts
+      WHERE
+        /*  %JoinFKPK(sales facts,deleted," = "," AND") */
+        sales facts.book_id = deleted.book_id AND
+        sales facts.pub_id = deleted.pub_id
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete Book_Dim because sales facts exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* Pub_dim  Book_Dim on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="Pub_dim"
+    CHILD_OWNER="", CHILD_TABLE="Book_Dim"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="", FK_COLUMNS="pub_id" */
+    IF EXISTS (SELECT * FROM deleted,Pub_dim
+      WHERE
+        /* %JoinFKPK(deleted,Pub_dim," = "," AND") */
+        deleted.pub_id = Pub_dim.pub_id AND
+        NOT EXISTS (
+          SELECT * FROM Book_Dim
+          WHERE
+            /* %JoinFKPK(Book_Dim,Pub_dim," = "," AND") */
+            Book_Dim.pub_id = Pub_dim.pub_id
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last Book_Dim because Pub_dim exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER tU_Book_Dim ON Book_Dim FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on Book_Dim */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insbook_id char(18), 
+           @inspub_id char(18),
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* Book_Dim  sales facts on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00027844", PARENT_OWNER="", PARENT_TABLE="Book_Dim"
+    CHILD_OWNER="", CHILD_TABLE="sales facts"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="", FK_COLUMNS="book_id""pub_id" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(book_id) OR
+    UPDATE(pub_id)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,sales facts
+      WHERE
+        /*  %JoinFKPK(sales facts,deleted," = "," AND") */
+        sales facts.book_id = deleted.book_id AND
+        sales facts.pub_id = deleted.pub_id
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update Book_Dim because sales facts exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* Pub_dim  Book_Dim on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="Pub_dim"
+    CHILD_OWNER="", CHILD_TABLE="Book_Dim"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="", FK_COLUMNS="pub_id" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(pub_id)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,Pub_dim
+        WHERE
+          /* %JoinFKPK(inserted,Pub_dim) */
+          inserted.pub_id = Pub_dim.pub_id
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update Book_Dim because Pub_dim does not exist.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER tD_Customer_dim ON Customer_dim FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on Customer_dim */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* Customer_dim  sales facts on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00011e3b", PARENT_OWNER="", PARENT_TABLE="Customer_dim"
+    CHILD_OWNER="", CHILD_TABLE="sales facts"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_38", FK_COLUMNS="customer_id" */
+    IF EXISTS (
+      SELECT * FROM deleted,sales facts
+      WHERE
+        /*  %JoinFKPK(sales facts,deleted," = "," AND") */
+        sales facts.customer_id = deleted.customer_dim_id
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete Customer_dim because sales facts exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER tU_Customer_dim ON Customer_dim FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on Customer_dim */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @inscustomer_dim_id id,
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* Customer_dim  sales facts on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="0001379f", PARENT_OWNER="", PARENT_TABLE="Customer_dim"
+    CHILD_OWNER="", CHILD_TABLE="sales facts"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_38", FK_COLUMNS="customer_id" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(customer_dim_id)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,sales facts
+      WHERE
+        /*  %JoinFKPK(sales facts,deleted," = "," AND") */
+        sales facts.customer_id = deleted.customer_dim_id
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update Customer_dim because sales facts exists.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER tD_Genre_dim ON Genre_dim FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on Genre_dim */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* Genre_dim  sales facts on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="0001109d", PARENT_OWNER="", PARENT_TABLE="Genre_dim"
+    CHILD_OWNER="", CHILD_TABLE="sales facts"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="", FK_COLUMNS="genre_id" */
+    IF EXISTS (
+      SELECT * FROM deleted,sales facts
+      WHERE
+        /*  %JoinFKPK(sales facts,deleted," = "," AND") */
+        sales facts.genre_id = deleted.genre_id
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete Genre_dim because sales facts exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER tU_Genre_dim ON Genre_dim FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on Genre_dim */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insgenre_id uniqueidentifier,
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* Genre_dim  sales facts on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="000130fc", PARENT_OWNER="", PARENT_TABLE="Genre_dim"
+    CHILD_OWNER="", CHILD_TABLE="sales facts"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="", FK_COLUMNS="genre_id" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(genre_id)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,sales facts
+      WHERE
+        /*  %JoinFKPK(sales facts,deleted," = "," AND") */
+        sales facts.genre_id = deleted.genre_id
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update Genre_dim because sales facts exists.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER tD_Pub_dim ON Pub_dim FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on Pub_dim */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* Pub_dim  Book_Dim on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="000100ae", PARENT_OWNER="", PARENT_TABLE="Pub_dim"
+    CHILD_OWNER="", CHILD_TABLE="Book_Dim"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="", FK_COLUMNS="pub_id" */
+    IF EXISTS (
+      SELECT * FROM deleted,Book_Dim
+      WHERE
+        /*  %JoinFKPK(Book_Dim,deleted," = "," AND") */
+        Book_Dim.pub_id = deleted.pub_id
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete Pub_dim because Book_Dim exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER tU_Pub_dim ON Pub_dim FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on Pub_dim */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @inspub_id char(18),
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* Pub_dim  Book_Dim on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00011021", PARENT_OWNER="", PARENT_TABLE="Pub_dim"
+    CHILD_OWNER="", CHILD_TABLE="Book_Dim"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="", FK_COLUMNS="pub_id" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(pub_id)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,Book_Dim
+      WHERE
+        /*  %JoinFKPK(Book_Dim,deleted," = "," AND") */
+        Book_Dim.pub_id = deleted.pub_id
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update Pub_dim because Book_Dim exists.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER tD_Region_dim ON Region_dim FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on Region_dim */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* Region_dim  stores_dim on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00013457", PARENT_OWNER="", PARENT_TABLE="Region_dim"
+    CHILD_OWNER="", CHILD_TABLE="stores_dim"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_11", FK_COLUMNS="region_id""state_code" */
+    IF EXISTS (
+      SELECT * FROM deleted,stores_dim
+      WHERE
+        /*  %JoinFKPK(stores_dim,deleted," = "," AND") */
+        stores_dim.region_id = deleted.region_id AND
+        stores_dim.state_code = deleted.state_code
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete Region_dim because stores_dim exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER tU_Region_dim ON Region_dim FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on Region_dim */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insregion_id varchar(5), 
+           @insstate_code char(2),
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* Region_dim  stores_dim on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00014fe1", PARENT_OWNER="", PARENT_TABLE="Region_dim"
+    CHILD_OWNER="", CHILD_TABLE="stores_dim"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_11", FK_COLUMNS="region_id""state_code" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(region_id) OR
+    UPDATE(state_code)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,stores_dim
+      WHERE
+        /*  %JoinFKPK(stores_dim,deleted," = "," AND") */
+        stores_dim.region_id = deleted.region_id AND
+        stores_dim.state_code = deleted.state_code
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update Region_dim because stores_dim exists.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER tD_sales facts ON sales facts FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on sales facts */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* Customer_dim  sales facts on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00069d65", PARENT_OWNER="", PARENT_TABLE="Customer_dim"
+    CHILD_OWNER="", CHILD_TABLE="sales facts"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_38", FK_COLUMNS="customer_id" */
+    IF EXISTS (SELECT * FROM deleted,Customer_dim
+      WHERE
+        /* %JoinFKPK(deleted,Customer_dim," = "," AND") */
+        deleted.customer_id = Customer_dim.customer_dim_id AND
+        NOT EXISTS (
+          SELECT * FROM sales facts
+          WHERE
+            /* %JoinFKPK(sales facts,Customer_dim," = "," AND") */
+            sales facts.customer_id = Customer_dim.customer_dim_id
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last sales facts because Customer_dim exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* Genre_dim  sales facts on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="Genre_dim"
+    CHILD_OWNER="", CHILD_TABLE="sales facts"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="", FK_COLUMNS="genre_id" */
+    IF EXISTS (SELECT * FROM deleted,Genre_dim
+      WHERE
+        /* %JoinFKPK(deleted,Genre_dim," = "," AND") */
+        deleted.genre_id = Genre_dim.genre_id AND
+        NOT EXISTS (
+          SELECT * FROM sales facts
+          WHERE
+            /* %JoinFKPK(sales facts,Genre_dim," = "," AND") */
+            sales facts.genre_id = Genre_dim.genre_id
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last sales facts because Genre_dim exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* Book_Dim  sales facts on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="Book_Dim"
+    CHILD_OWNER="", CHILD_TABLE="sales facts"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="", FK_COLUMNS="book_id""pub_id" */
+    IF EXISTS (SELECT * FROM deleted,Book_Dim
+      WHERE
+        /* %JoinFKPK(deleted,Book_Dim," = "," AND") */
+        deleted.book_id = Book_Dim.book_id AND
+        deleted.pub_id = Book_Dim.pub_id AND
+        NOT EXISTS (
+          SELECT * FROM sales facts
+          WHERE
+            /* %JoinFKPK(sales facts,Book_Dim," = "," AND") */
+            sales facts.book_id = Book_Dim.book_id AND
+            sales facts.pub_id = Book_Dim.pub_id
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last sales facts because Book_Dim exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* time_dim  sales facts on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="time_dim"
+    CHILD_OWNER="", CHILD_TABLE="sales facts"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="", FK_COLUMNS="time_id" */
+    IF EXISTS (SELECT * FROM deleted,time_dim
+      WHERE
+        /* %JoinFKPK(deleted,time_dim," = "," AND") */
+        deleted.time_id = time_dim.time_id AND
+        NOT EXISTS (
+          SELECT * FROM sales facts
+          WHERE
+            /* %JoinFKPK(sales facts,time_dim," = "," AND") */
+            sales facts.time_id = time_dim.time_id
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last sales facts because time_dim exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* stores_dim  sales facts on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="stores_dim"
+    CHILD_OWNER="", CHILD_TABLE="sales facts"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="", FK_COLUMNS="state_code""region_id""stor_id" */
+    IF EXISTS (SELECT * FROM deleted,stores_dim
+      WHERE
+        /* %JoinFKPK(deleted,stores_dim," = "," AND") */
+        deleted.state_code = stores_dim.state_code AND
+        deleted.region_id = stores_dim.region_id AND
+        deleted.stor_id = stores_dim.stor_id AND
+        NOT EXISTS (
+          SELECT * FROM sales facts
+          WHERE
+            /* %JoinFKPK(sales facts,stores_dim," = "," AND") */
+            sales facts.state_code = stores_dim.state_code AND
+            sales facts.region_id = stores_dim.region_id AND
+            sales facts.stor_id = stores_dim.stor_id
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last sales facts because stores_dim exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER tU_sales facts ON sales facts FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on sales facts */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insstor_id char(4), 
+           @inspub_id char(4), 
+           @instime_id uniqueidentifier, 
+           @insbook_id char(18), 
+           @insgenre_id uniqueidentifier, 
+           @insstate_code char(2), 
+           @insregion_id varchar(5), 
+           @inscustomer_id id,
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* Customer_dim  sales facts on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="0006e1c4", PARENT_OWNER="", PARENT_TABLE="Customer_dim"
+    CHILD_OWNER="", CHILD_TABLE="sales facts"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_38", FK_COLUMNS="customer_id" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(customer_id)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,Customer_dim
+        WHERE
+          /* %JoinFKPK(inserted,Customer_dim) */
+          inserted.customer_id = Customer_dim.customer_dim_id
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update sales facts because Customer_dim does not exist.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* Genre_dim  sales facts on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="Genre_dim"
+    CHILD_OWNER="", CHILD_TABLE="sales facts"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="", FK_COLUMNS="genre_id" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(genre_id)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,Genre_dim
+        WHERE
+          /* %JoinFKPK(inserted,Genre_dim) */
+          inserted.genre_id = Genre_dim.genre_id
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update sales facts because Genre_dim does not exist.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* Book_Dim  sales facts on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="Book_Dim"
+    CHILD_OWNER="", CHILD_TABLE="sales facts"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="", FK_COLUMNS="book_id""pub_id" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(book_id) OR
+    UPDATE(pub_id)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,Book_Dim
+        WHERE
+          /* %JoinFKPK(inserted,Book_Dim) */
+          inserted.book_id = Book_Dim.book_id and
+          inserted.pub_id = Book_Dim.pub_id
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update sales facts because Book_Dim does not exist.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* time_dim  sales facts on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="time_dim"
+    CHILD_OWNER="", CHILD_TABLE="sales facts"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="", FK_COLUMNS="time_id" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(time_id)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,time_dim
+        WHERE
+          /* %JoinFKPK(inserted,time_dim) */
+          inserted.time_id = time_dim.time_id
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update sales facts because time_dim does not exist.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* stores_dim  sales facts on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="stores_dim"
+    CHILD_OWNER="", CHILD_TABLE="sales facts"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="", FK_COLUMNS="state_code""region_id""stor_id" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(state_code) OR
+    UPDATE(region_id) OR
+    UPDATE(stor_id)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,stores_dim
+        WHERE
+          /* %JoinFKPK(inserted,stores_dim) */
+          inserted.state_code = stores_dim.state_code and
+          inserted.region_id = stores_dim.region_id and
+          inserted.stor_id = stores_dim.stor_id
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update sales facts because stores_dim does not exist.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER tD_stores_dim ON stores_dim FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on stores_dim */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* stores_dim  sales facts on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="0002ab3c", PARENT_OWNER="", PARENT_TABLE="stores_dim"
+    CHILD_OWNER="", CHILD_TABLE="sales facts"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="", FK_COLUMNS="state_code""region_id""stor_id" */
+    IF EXISTS (
+      SELECT * FROM deleted,sales facts
+      WHERE
+        /*  %JoinFKPK(sales facts,deleted," = "," AND") */
+        sales facts.state_code = deleted.state_code AND
+        sales facts.region_id = deleted.region_id AND
+        sales facts.stor_id = deleted.stor_id
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete stores_dim because sales facts exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* Region_dim  stores_dim on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="Region_dim"
+    CHILD_OWNER="", CHILD_TABLE="stores_dim"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_11", FK_COLUMNS="region_id""state_code" */
+    IF EXISTS (SELECT * FROM deleted,Region_dim
+      WHERE
+        /* %JoinFKPK(deleted,Region_dim," = "," AND") */
+        deleted.region_id = Region_dim.region_id AND
+        deleted.state_code = Region_dim.state_code AND
+        NOT EXISTS (
+          SELECT * FROM stores_dim
+          WHERE
+            /* %JoinFKPK(stores_dim,Region_dim," = "," AND") */
+            stores_dim.region_id = Region_dim.region_id AND
+            stores_dim.state_code = Region_dim.state_code
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last stores_dim because Region_dim exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER tU_stores_dim ON stores_dim FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on stores_dim */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insstate_code char(2), 
+           @insregion_id varchar(5), 
+           @insstor_id char(4),
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* stores_dim  sales facts on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="0002e472", PARENT_OWNER="", PARENT_TABLE="stores_dim"
+    CHILD_OWNER="", CHILD_TABLE="sales facts"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="", FK_COLUMNS="state_code""region_id""stor_id" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(state_code) OR
+    UPDATE(region_id) OR
+    UPDATE(stor_id)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,sales facts
+      WHERE
+        /*  %JoinFKPK(sales facts,deleted," = "," AND") */
+        sales facts.state_code = deleted.state_code AND
+        sales facts.region_id = deleted.region_id AND
+        sales facts.stor_id = deleted.stor_id
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update stores_dim because sales facts exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* Region_dim  stores_dim on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="Region_dim"
+    CHILD_OWNER="", CHILD_TABLE="stores_dim"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_11", FK_COLUMNS="region_id""state_code" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(region_id) OR
+    UPDATE(state_code)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,Region_dim
+        WHERE
+          /* %JoinFKPK(inserted,Region_dim) */
+          inserted.region_id = Region_dim.region_id and
+          inserted.state_code = Region_dim.state_code
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update stores_dim because Region_dim does not exist.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER tD_time_dim ON time_dim FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on time_dim */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* time_dim  sales facts on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="000110b0", PARENT_OWNER="", PARENT_TABLE="time_dim"
+    CHILD_OWNER="", CHILD_TABLE="sales facts"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="", FK_COLUMNS="time_id" */
+    IF EXISTS (
+      SELECT * FROM deleted,sales facts
+      WHERE
+        /*  %JoinFKPK(sales facts,deleted," = "," AND") */
+        sales facts.time_id = deleted.time_id
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete time_dim because sales facts exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER tU_time_dim ON time_dim FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on time_dim */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @instime_id uniqueidentifier,
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* time_dim  sales facts on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="000129ed", PARENT_OWNER="", PARENT_TABLE="time_dim"
+    CHILD_OWNER="", CHILD_TABLE="sales facts"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="", FK_COLUMNS="time_id" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(time_id)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,sales facts
+      WHERE
+        /*  %JoinFKPK(sales facts,deleted," = "," AND") */
+        sales facts.time_id = deleted.time_id
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update time_dim because sales facts exists.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
