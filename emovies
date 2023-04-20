@@ -1985,3 +1985,8 @@ END
 go
 
 
+
+
+ALTER TABLE [CUST]
+ADD [Demo]  char(18)  NULL
+go
